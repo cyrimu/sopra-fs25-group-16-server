@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.classes;
 
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.GameType;
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.CardColor;
+import ch.uzh.ifi.hase.soprafs24.constant.GameType;
+import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 
 
 public class TextCard {
@@ -19,7 +19,7 @@ public class TextCard {
     }
 
     TextCard(String word, CardColor color) {
-        assert isValidWord(word) : "Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc."
+        assert isValidWord(word) : "Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
         this.mType = GameType.TEXT;
         this.mIsRevealed = false;
         this.mColor = color;
@@ -43,6 +43,7 @@ public class TextCard {
     }
 
     public void setContent(String content) {
+        assert !(content == null || content.equals("")) : "String cannot be empty on Card!";
         this.mContent = content;
     }
 

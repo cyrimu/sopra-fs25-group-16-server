@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.classes;
 
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.TeamColor;
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.PlayerRoles;
+import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
+import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
+
+import java.util.Optional;
 
 public class Team implements Cloneable {
     final TeamColor mColor;
@@ -10,12 +12,12 @@ public class Team implements Cloneable {
 
     public Team(TeamColor color) {
         this.mColor = color;
-        this.mSpymaster = "";
-        this.mOperative = "";
+        this.mSpymaster = null;
+        this.mOperative = null;
     }
 
     public String[] getMembers() {
-        return {mSpymaster, mOperative};
+        return new String[]{mSpymaster, mOperative};
     }
 
     public TeamColor getColor() {
@@ -23,19 +25,21 @@ public class Team implements Cloneable {
     }
 
     public void setSpymaster(String playerName) {
+        assert !(playerName.equals("")) : "Playername cannot be empty";
         this.mSpymaster = playerName;
     }
 
-    public String getSpymaster() {
-        return mSpymaster;
+    public Optional<String> getSpymaster() {
+        return (mSpymaster == null) ? Optional.empty() : Optional.of(mSpymaster);
     }
 
     public void setOperative(String playerName) {
+        assert !(playerName.equals("")) : "Playername cannot be empty";
         this.mOperative = playerName;
     }
 
-    public String getOperative() {
-        return mOperative;
+    public Optional<String> getOperative() {
+        return (mOperative == null) ? Optional.empty() : Optional.of(mOperative);
     }
 
     @Override

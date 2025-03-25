@@ -3,18 +3,23 @@ package ch.uzh.ifi.hase.soprafs24.classes;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.classes.Team;
 import ch.uzh.ifi.hase.soprafs24.classes.Board;
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.GameType;
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.SupportedLanguages;
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.PlayerRoles;
-import ch.uzh.ifi.hase.soprafs24.constant.Enums.TeamColor;
 
+import ch.uzh.ifi.hase.soprafs24.constant.GameType;
+import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
+import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
+import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.NoSuchElementException;
 
 
 public class Game {
-    final int mGameID;
+    final UUID mGameID;
     final String mHost;
     Player[] mPlayers;
     GameType mType;
@@ -30,45 +35,56 @@ public class Game {
 
     public Game(String host, Player[] players, GameType type, SupportedLanguages language, Team blueTeam, Team redTeam) {
         this.mGameID = UUID.randomUUID();
-        assert !(host.isEqual("")) : "Hostname cannot be empty";
+        assert !(host.equals("")) : "Hostname cannot be empty";
         this.mHost = host;
-        assert players.length.isEqual(4) : "The number of Players is incorrect";
-        this.mPlayers = {players[0].clone(), players[1].clone(), players[2].clone(), players[3].clone()};
+        assert players.length == 4 : "The number of Players is incorrect";
         this.mType = type;
         this.mLanguage = language;
-        this.mBlueTeam = blueTeam.clone();
-        this.mRedTeam = redTeam.clone();
         this.mFirstTeam = TeamColor.BLUE;
-        this.mBoard = Board(this.mFirstTeam);
+        this.mBoard = new Board(this.mFirstTeam);
         this.mTurn = PlayerRoles.BLUE_SPYMASTER;
         this.mRemainingGuesses = 0;
         this.mWinner = Optional.empty();
         this.mLog = new ArrayList<String>();
+
+        try {
+            this.mPlayers = new Player[]{(Player) players[0].clone(), (Player) players[1].clone(), (Player) players[2].clone(), (Player) players[3].clone()};
+            this.mBlueTeam = (Team) blueTeam.clone();
+            this.mRedTeam = (Team) redTeam.clone();
+        }
+
+        catch (CloneNotSupportedException e){
+            // Will (hopefully 99.999999%) never occur!
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went terribly wrong!");
+        }
     }
 
-    public void setPlayerRole(String playerName, PlayerRoles role) {
+    public void setPlayerRole(String playerName, PlayerRoles role) throws NoSuchElementException {
         boolean playerFound = false;
         for (Player player : mPlayers){
-            if (player.getPlayerName().isEqual(playerName)){
+            if (player.getPlayerName().equals(playerName)){
                 playerFound = true;
-                PlayerRoles oldRole = player.getRole();
+                Optional<PlayerRoles> oldRole = player.getRole();
 
-                updateTeamRoleChange(oldRole, "");
+                if (oldRole.isPresent()) {
+                    updateTeamRoleChange(oldRole.get(), null);
+                }
+
                 player.setRole(role);
                 updateTeamRoleChange(role, playerName);
                 break;
             }
         }
 
-        if (!playerFound) {throw new Exception("No Player with given playerName found!")}
+        if (!playerFound) {throw new NoSuchElementException("No Player with given playerName found!"); }
     }
 
     public Optional<PlayerRoles> getRolebyName (String playerName) {
         Optional<PlayerRoles> opt = Optional.empty();
-
         for (Player player : mPlayers) {
-            if (playerName.isEqual(player.getPlayerName())) {
-                opt = Optional.of(player.getRole());
+            if (playerName.equals(player.getPlayerName())) {
+                if (player.getRole().isPresent())
+                    opt = Optional.of(player.getRole().get());
                 break;
             }
         }
@@ -79,7 +95,7 @@ public class Game {
         Optional<String> opt = Optional.empty();
 
         for (Player player : mPlayers) {
-            if (role.isEqual(player.getRole())) {
+            if (role.equals(player.getRole())) {
                 opt = Optional.of(player.getPlayerName());
                 break;
             }
@@ -88,23 +104,24 @@ public class Game {
     }
 
     private void logOperativeTurn(PlayerRoles role, String word) {
-        logMessage = "%s guessed the following word: %s"
+        String logMessage = "%s guessed the following word: %s";
         String playerName = getNamebyRole(role).get();
         mLog.add(String.format(logMessage, playerName, word));
     }
 
     private void logSpyMasterTurn(PlayerRoles role, String word) {
-        logMessage = "%s provided the following Hint: %s"
+        String logMessage = "%s provided the following Hint: %s";
         String playerName = getNamebyRole(role).get();
         mLog.add(String.format(logMessage, playerName, word));
     }
 
     public String[] getLog() {
-        String[] log = mLog.toArray();
+        String[] log = new String[mLog.size()];
+        log = mLog.toArray(log);
         return log;
     }
 
-    public int getGameID() {
+    public UUID getGameID() {
         return mGameID;
     }
 
@@ -112,13 +129,27 @@ public class Game {
         return mHost;
     }
 
-    public void setPlayers(Players[] players) {
-        assert players.length.isEqual(4) : "The number of Players is incorrect";
-        this.mPlayers = {players[0].clone(), players[1].clone(), players[2].clone(), players[3].clone()};
+    public void setPlayers(Player[] players) {
+        assert players.length == 4 : "The number of Players is incorrect";
+        try {
+            this.mPlayers = new Player[]{(Player) players[0].clone(), (Player) players[1].clone(), (Player) players[2].clone(), (Player) players[3].clone()};
+        }
+
+        catch (CloneNotSupportedException e){
+            // Will (hopefully 99.999999%) never occur!
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went terribly wrong!");
+        }
     }
 
-    public Players[] getPlayers() {
-        return {players[0].clone(), players[1].clone(), players[2].clone(), players[3].clone()};
+    public Player[] getPlayers() {
+        try {
+            return new Player[]{(Player) mPlayers[0].clone(), (Player) mPlayers[1].clone(), (Player) mPlayers[2].clone(), (Player) mPlayers[3].clone()};
+        }
+
+        catch (CloneNotSupportedException e){
+            // Will (hopefully 99.999999%) never occur!
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went terribly wrong!");
+        }
     }
 
     public void setGameType(GameType type) {
@@ -159,17 +190,17 @@ public class Game {
 
     private void updateTeamRoleChange(PlayerRoles role, String playerName) {
         switch (role) {
-            case PlayerRoles.BLUE_SPYMASTER:
-                mBlueTeam.setSpymaster("");
+            case BLUE_SPYMASTER:
+                mBlueTeam.setSpymaster(playerName);
                 break;
-            case PlayerRoles.BLUE_OPERATIVE:
-                mBlueTeam.setOperative("");
+            case BLUE_OPERATIVE:
+                mBlueTeam.setOperative(playerName);
                     break;
-            case PlayerRoles.RED_SPYMASTER:
-                mRedTeam.setSpymaster("");
+            case RED_SPYMASTER:
+                mRedTeam.setSpymaster(playerName);
                 break;
-            case PlayerRoles.BLUE_OPERATIVE:
-                mRedTeam.setOperative("");
+            case RED_OPERATIVE:
+                mRedTeam.setOperative(playerName);
                 break;
         }
     }
