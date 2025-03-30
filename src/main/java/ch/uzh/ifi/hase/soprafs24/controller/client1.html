@@ -10,7 +10,7 @@
 <script>
     window.addEventListener('load', (e) => {
         const gameID = 1;
-        const socket = new SockJS('http://localhost:8080/game');
+        const socket = new SockJS('http://localhost:8080/live');
         const stompClient = Stomp.over(socket);
 
         stompClient.connect({}, (frame) => {

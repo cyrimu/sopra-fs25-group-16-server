@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.controllers_ws;
+package ch.uzh.ifi.hase.soprafs24.controller;
 
 import org.springframework.stereotype.Controller;
 import java.text.SimpleDateFormat;
@@ -11,7 +11,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 @Controller
 public class GreetingController {
 
-	@MessageMapping("/chat")
+	@MessageMapping("/live")
 	@SendTo("/topic/greetings")
 	public String handle(String greeting) {
 		System.out.println("Hello from Java!");

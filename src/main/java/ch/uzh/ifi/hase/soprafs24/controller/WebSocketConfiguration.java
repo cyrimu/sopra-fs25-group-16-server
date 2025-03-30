@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.controllers_ws;
+package ch.uzh.ifi.hase.soprafs24.controller;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -12,8 +12,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/chat").setAllowedOriginPatterns("*").withSockJS();
-		registry.addEndpoint("/game").setAllowedOriginPatterns("*").withSockJS();
+		registry.addEndpoint("/live").setAllowedOriginPatterns("*").withSockJS();
 	}
 
 	@Override

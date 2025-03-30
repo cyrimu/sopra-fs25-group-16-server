@@ -1,8 +1,9 @@
-package ch.uzh.ifi.hase.soprafs24.controllers_ws;
+package ch.uzh.ifi.hase.soprafs24.controller;
 
 import org.springframework.stereotype.Controller;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Clue;
+import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Guess;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
 
@@ -41,9 +42,8 @@ public class GameController {
         System.out.println("Clue: " + clue.getClueText() + ", "+ clue.getClueNumber() + " Username: " + clue.getUsername());
 
         // Call GameService
-        // Should return a game object (Not implemented yet)
-        String payload = gameService.handleClue(clue);
         
+        Game payload = gameService.handleClue(clue);
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
     }
 
