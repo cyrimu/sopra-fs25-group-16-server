@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.controller;
+package ch.uzh.ifi.hase.soprafs24.controllers_ws;
 
 import org.springframework.stereotype.Controller;
 import java.text.SimpleDateFormat;
