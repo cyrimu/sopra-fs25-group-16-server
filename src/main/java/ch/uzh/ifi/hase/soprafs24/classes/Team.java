@@ -11,9 +11,7 @@ public class Team {
     String mOperative;
 
     public Team(TeamColor color) {
-        this.mColor = color;
-        this.mSpymaster = null;
-        this.mOperative = null;
+        this(color, null, null);
     }
 
     protected Team(TeamColor color, String spymaster, String operative) {
