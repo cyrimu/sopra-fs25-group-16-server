@@ -22,18 +22,24 @@ import java.lang.IllegalArgumentException;
 
 
 public class BoardClassTest {
+    @InjectMocks
+    private Board testBoard = new Board(GameType.TEXT, TeamColor.BLUE, SupportedLanguages.ENGLISH);
+
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        testBoard = new Board(GameType.TEXT, TeamColor.BLUE, SupportedLanguages.ENGLISH);
+    }
 
     @Test
     public void boardConstructor_Succeds() {
-
-        Board testBoard = new Board(GameType.TEXT, TeamColor.BLUE, SupportedLanguages.ENGLISH);
+        testBoard = new Board(GameType.TEXT, TeamColor.BLUE, SupportedLanguages.ENGLISH);
         assertNotNull(testBoard.getCards());
     }
 
     @Test
     public void boardCardsAreShuffledUponCreation() {
-
-        Board testBoard = new Board(GameType.TEXT, TeamColor.BLUE, SupportedLanguages.ENGLISH);
         Card[] cards = testBoard.getCards();
 
         // Shuffling will be tested without rigurous statistical verification
@@ -50,8 +56,6 @@ public class BoardClassTest {
 
     @Test
     public void boardCardsAreUniqueUponCreation() {
-
-        Board testBoard = new Board(GameType.TEXT, TeamColor.BLUE, SupportedLanguages.ENGLISH);
         Card[] cards = testBoard.getCards();
 
         boolean allUnique = true;
@@ -68,8 +72,6 @@ public class BoardClassTest {
 
     @Test
     public void boardGetCardsCreatesDeepCopy() {
-        
-        Board testBoard = new Board(GameType.TEXT, TeamColor.BLUE, SupportedLanguages.ENGLISH);
         Card[] copy1 = testBoard.getCards();
         Card[] copy2 = testBoard.getCards();
         assertNotSame(copy1, copy2);

@@ -18,12 +18,19 @@ import java.lang.IllegalArgumentException;
 
 
 public class TeamClassTest {
+    @InjectMocks
+    private Team testTeam = new Team(TeamColor.BLUE);
+
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        testTeam = new Team(TeamColor.BLUE);
+    }
 
     @Test
     public void teamOneParameterConstructor_Succeds() {
-
-        Team testTeam = new Team(TeamColor.BLUE);
-
+        testTeam = new Team(TeamColor.BLUE);
         assertEquals(testTeam.getColor(), TeamColor.BLUE);
         assertEquals(testTeam.getSpymaster().isPresent(), false);
         assertEquals(testTeam.getOperative().isPresent(), false);
@@ -34,7 +41,6 @@ public class TeamClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Team testTeam = new Team(TeamColor.BLUE);
             testTeam.setSpymaster("");
             },
             "Expected previous Instruction to throw, but it did not."
@@ -51,7 +57,6 @@ public class TeamClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Team testTeam = new Team(TeamColor.BLUE);
             testTeam.setOperative("");
             },
             "Expected previous Instruction to throw, but it did not."
@@ -65,8 +70,6 @@ public class TeamClassTest {
 
     @Test
     public void teamCopyConstructorCreatesDeepCopy() {
-        
-        Team testTeam = new Team(TeamColor.BLUE);
         testTeam.setOperative("Bob");
         testTeam.setSpymaster("John");
         Team testCopy = new Team(testTeam);

@@ -18,12 +18,19 @@ import java.lang.IllegalArgumentException;
 
 
 public class PlayerClassTest {
+    @InjectMocks
+    private Player testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
+
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
+    }
 
     @Test
     public void playerOneParameterConstructor_Succeds() {
-
-        Player testPlayer = new Player("kevin");
-
+        testPlayer = new Player("kevin");
         assertEquals(testPlayer.getPlayerName(), "kevin");
         assertEquals(testPlayer.getRole().isPresent(), false);
         assertEquals(testPlayer.getTeam().isPresent(), false);
@@ -31,9 +38,7 @@ public class PlayerClassTest {
 
     @Test
     public void playerTwoParameterConstructor_Succeds() {
-
-        Player testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
-
+        testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
         assertEquals(testPlayer.getPlayerName(), "kevin");
         assertEquals(testPlayer.getRole().get(), PlayerRoles.BLUE_SPYMASTER);
         assertEquals(testPlayer.getTeam().get(), TeamColor.BLUE);
@@ -44,7 +49,7 @@ public class PlayerClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Player testPlayer = new Player("", PlayerRoles.BLUE_SPYMASTER);
+            testPlayer = new Player("", PlayerRoles.BLUE_SPYMASTER);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -60,7 +65,7 @@ public class PlayerClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Player testPlayer = new Player(null, PlayerRoles.BLUE_SPYMASTER);
+            testPlayer = new Player(null, PlayerRoles.BLUE_SPYMASTER);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -72,9 +77,7 @@ public class PlayerClassTest {
     }
 
     @Test
-    public void playerCopyConstructorCreatesDeepCopy() {
-        
-        Player testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
+    public void playerCopyConstructorCreatesDeepCopy() { 
         Player testCopy = new Player(testPlayer);
         
         // Assert fields are correctly copied.

@@ -20,12 +20,19 @@ import java.lang.IllegalArgumentException;
 
 public class CardFactoryTest {
 
+    @InjectMocks
+    private CardFactory creator = new CardFactory();
+    private TextCard testCard = creator.createTextCard(CardColor.WHITE, "Tree");
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        testCard = creator.createTextCard(CardColor.WHITE, "Tree");
+    }
+
     @Test
     public void textCardConstructor_Succeds() {
-
-        CardFactory creator = new CardFactory();
-        TextCard testCard = creator.createTextCard(CardColor.WHITE, "Tree");
-
+        testCard = creator.createTextCard(CardColor.WHITE, "Tree");
         assertEquals(testCard.getType(), GameType.TEXT);
         assertEquals(testCard.getColor(), CardColor.WHITE);
         assertEquals(testCard.getContent(), "Tree");
@@ -37,8 +44,7 @@ public class CardFactoryTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            CardFactory creator = new CardFactory();
-            TextCard testCard = creator.createTextCard(CardColor.WHITE, "");
+            testCard = creator.createTextCard(CardColor.WHITE, "");
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -54,8 +60,7 @@ public class CardFactoryTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            CardFactory creator = new CardFactory();
-            TextCard testCard = creator.createTextCard(CardColor.WHITE, null);
+            testCard = creator.createTextCard(CardColor.WHITE, null);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -71,8 +76,7 @@ public class CardFactoryTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            CardFactory creator = new CardFactory();
-            TextCard testCard = creator.createTextCard(CardColor.WHITE, "123");
+            testCard = creator.createTextCard(CardColor.WHITE, "123");
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -85,9 +89,6 @@ public class CardFactoryTest {
 
     @Test
     public void textCardCopyConstructorCreatesDeepCopy() {
-        
-        CardFactory creator = new CardFactory();
-        TextCard testCard = creator.createTextCard(CardColor.WHITE, "Tree");
         TextCard copyCard = (TextCard) creator.copyCard(testCard);
 
         assertEquals(testCard.getType(), copyCard.getType());
