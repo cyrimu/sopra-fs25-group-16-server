@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 
 import java.util.Optional;
+import java.lang.IllegalArgumentException;
 
 
 public class Player {
@@ -11,37 +12,21 @@ public class Player {
     PlayerRoles mRole;
     TeamColor mTeam;
 
-    public Player(String name, PlayerRoles role, TeamColor color) {
-        assert !(name.equals("")) && name != null : "Playername cannot be empty";
-        assert teamAndRoleMatch(role, color) : "Team Color and role must match!";
-        this.mPlayerName = name;
-        this.mRole = role;
-        this.mTeam = color;
+    public Player(String name) throws IllegalArgumentException {
+        this(name, null);
     }
 
-    public Player(String name) {
-        assert !(name.equals("")) && name != null : "Playername cannot be empty";
+    public Player(String name, PlayerRoles role) throws IllegalArgumentException {
+        if (name == null || name.equals("")) {
+            throw new IllegalArgumentException("Playername cannot be empty");
+        }
         this.mPlayerName = name;
-        this.mRole = null;
-        this.mTeam = null;
+        this.setRole(role);
     }
 
     public Player(Player that) {
         // Because this is Java no variables for simplified syntax is possible (Without creating another Factory ...)
-        this(that.getPlayerName(),(that.getRole().isPresent()) ? that.getRole().get() : null, (that.getTeam().isPresent()) ? that.getTeam().get() : null);
-    }
-
-    private boolean teamAndRoleMatch(PlayerRoles role, TeamColor color) {
-        if (mRole == null || mTeam == null ) {
-            return true;
-        }
-
-        if (color.equals(TeamColor.RED)){
-            return role == PlayerRoles.RED_SPYMASTER || role == PlayerRoles.RED_OPERATIVE;
-        }
-        else {
-            return role == PlayerRoles.BLUE_SPYMASTER || role == PlayerRoles.BLUE_OPERATIVE;
-        }
+        this(that.getPlayerName(),(that.getRole().isPresent()) ? that.getRole().get() : null);
     }
 
     public String getPlayerName(){
