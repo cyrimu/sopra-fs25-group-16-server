@@ -70,4 +70,22 @@ public class PlayerClassTest {
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
+
+    @Test
+    public void playerCopyConstructorCreatesDeepCopy() {
+        
+        Player testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
+        Player testCopy = new Player(testPlayer);
+        
+        // Assert fields are correctly copied.
+        assertEquals(testPlayer.getPlayerName(), testCopy.getPlayerName());
+        assertEquals(testPlayer.getRole().get(), testCopy.getRole().get());
+        assertEquals(testPlayer.getTeam().get(), testCopy.getTeam().get());
+
+        // Modify copy -> No modification of original should occur.
+        testCopy.setRole(PlayerRoles.RED_OPERATIVE);
+
+        assertNotSame(testPlayer.getRole().get(), testCopy.getRole().get());
+        assertNotSame(testPlayer.getTeam().get(), testCopy.getTeam().get());
+    }
 }

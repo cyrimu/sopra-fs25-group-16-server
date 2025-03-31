@@ -44,7 +44,7 @@ public class Game {
         this.mBlueTeam = new Team(blueTeam);
         this.mRedTeam = new Team(redTeam);
         this.mFirstTeam = TeamColor.BLUE;
-        this.mBoard = new Board(type, this.mFirstTeam);
+        this.mBoard = new Board(type, this.mFirstTeam, this.mLanguage);
         this.mTurn = PlayerRoles.BLUE_SPYMASTER;
         this.mRemainingGuesses = 0;
         this.mWinner = Optional.empty();

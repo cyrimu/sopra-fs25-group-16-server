@@ -4,12 +4,17 @@ import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 
+import java.lang.IllegalArgumentException;
 
+// In Order to avoid creating factories (Which are somewhat enforced by Java) null fields are temporaryly used for Exception handling
 public class TextCard extends Card<String> {
 
-    // Input validation is ommitted for now (Since this is Java sadly eventually Card Factory needs to be created!)
-    public TextCard(CardColor color, String word) {
-        super(GameType.TEXT, color, word);
+    public TextCard(CardColor color, String word) throws IllegalArgumentException {
+        super(GameType.TEXT, color, word, false);
+    }
+
+    public TextCard(Card that) throws IllegalArgumentException {
+        super(that.getType(), that.getColor(), (String) that.getContent(), that.getIsRevealed());
     }
 
     public static boolean isValidWord(String word) {
@@ -20,9 +25,11 @@ public class TextCard extends Card<String> {
         return word.matches("[a-zA-Z]+");
     }
 
-    @Override
-    public void setContent(String word) {
-        assert (isValidWord(word)) : "Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+    public void setContent(String word) throws IllegalArgumentException {
+        if (!(isValidWord(word))) {
+            throw new IllegalArgumentException("Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.");
+        }
+
         this.mContent = word;
     }
 }

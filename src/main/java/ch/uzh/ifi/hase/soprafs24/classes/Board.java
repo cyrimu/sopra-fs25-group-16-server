@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.classes.TextCard;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
+import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 
 import java.util.Random;
 import java.util.ArrayList;
@@ -17,22 +18,23 @@ public class Board {
     public static final int NUM_CARDS_WHITE = 7;
 
     private static final String[] WORDS = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-    private static final Random rand = new Random();
+    private final Random rand;
 
     Card[] mCards;
 
-    public Board(GameType gameType, TeamColor firstTeam) {
+    public Board(GameType gameType, TeamColor firstTeam, SupportedLanguages language) {
         assert (NUM_CARDS_FIRST_TEAM + NUM_CARDS_SECOND_TEAM + NUM_CARDS_BLACK + NUM_CARDS_WHITE) == (BOARD_SIZE) : "Constants do not add up!";
         assert WORDS.length >= BOARD_SIZE : "Not enough unique words are stored to generate a game board!";
+        rand = new Random();
 
         ArrayList<Card> cardList = new ArrayList<Card>(BOARD_SIZE);
         CardColor colorFirstTeam = (firstTeam == TeamColor.RED) ? CardColor.RED : CardColor.BLUE;
         CardColor colorSecondTeam = (firstTeam == TeamColor.RED) ? CardColor.BLUE : CardColor.RED;
 
-        generateCards(NUM_CARDS_FIRST_TEAM, gameType, colorFirstTeam, cardList);
-        generateCards(NUM_CARDS_SECOND_TEAM, gameType, colorSecondTeam, cardList);
-        generateCards(NUM_CARDS_BLACK, gameType, CardColor.BLACK, cardList);
-        generateCards(NUM_CARDS_WHITE, gameType, CardColor.WHITE, cardList);
+        generateCards(NUM_CARDS_FIRST_TEAM, gameType, colorFirstTeam, cardList, language);
+        generateCards(NUM_CARDS_SECOND_TEAM, gameType, colorSecondTeam, cardList, language);
+        generateCards(NUM_CARDS_BLACK, gameType, CardColor.BLACK, cardList, language);
+        generateCards(NUM_CARDS_WHITE, gameType, CardColor.WHITE, cardList, language);
 
         this.mCards = new Card[cardList.size()];
         this.mCards = cardList.toArray(this.mCards);
@@ -40,7 +42,7 @@ public class Board {
     }
 
 
-    private void generateCards(int number, GameType gameType, CardColor cardType, ArrayList<Card> list) {
+    private void generateCards(int number, GameType gameType, CardColor cardType, ArrayList<Card> list, SupportedLanguages language) {
         int index = rand.nextInt(WORDS.length);
         for (int i = 0; i < number; i++) {
             if (gameType == GameType.TEXT) {
@@ -53,6 +55,10 @@ public class Board {
             else {
                 // Image mode will be implemented later
             }
+        }
+        //Add Translation Logic
+        for (int i = 0; i < list.size(); i++) {
+            continue;
         }
     }
 
