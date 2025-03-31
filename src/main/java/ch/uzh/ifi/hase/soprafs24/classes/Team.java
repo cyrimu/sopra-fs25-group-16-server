@@ -5,7 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 
 import java.util.Optional;
 
-public class Team implements Cloneable {
+public class Team {
     final TeamColor mColor;
     String mSpymaster;
     String mOperative;
@@ -16,8 +16,24 @@ public class Team implements Cloneable {
         this.mOperative = null;
     }
 
+    protected Team(TeamColor color, String spymaster, String operative) {
+        this.mColor = color;
+        this.mSpymaster = spymaster;
+        this.mOperative = operative;
+    }
+
+    public Team(Team that) {
+        // Because this is Java no variables for simplified syntax is possible (Without creating another Factory ...)
+        this(that.getColor(), (that.getSpymaster().isPresent()) ? that.getSpymaster().get() : null, (that.getOperative().isPresent()) ? that.getOperative().get() : null);
+    }
+
+    // ATTENTION: this method is potentially unsafe and array might contain null!!!!
+    // Therefore manual verification must be handled by caller!
+    // Cannot figure out how to create non generic array with Optionals.
     public String[] getMembers() {
-        return new String[]{mSpymaster, mOperative};
+        String spymaster = (getSpymaster().isPresent()) ? getSpymaster().get(): null;
+        String operative = (getOperative().isPresent()) ? getOperative().get(): null;
+        return new String[] {spymaster, operative};
     }
 
     public TeamColor getColor() {
@@ -40,11 +56,5 @@ public class Team implements Cloneable {
 
     public Optional<String> getOperative() {
         return (mOperative == null) ? Optional.empty() : Optional.of(mOperative);
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        // Returning a clone of the current object
-        return super.clone(); 
     }
 }

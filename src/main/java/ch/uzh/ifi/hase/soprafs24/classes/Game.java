@@ -19,7 +19,7 @@ import java.util.NoSuchElementException;
 
 
 public class Game {
-    final UUID mGameID;
+    final int mGameID;
     final String mHost;
     Player[] mPlayers;
     GameType mType;
@@ -34,29 +34,21 @@ public class Game {
     ArrayList<String> mLog;
 
     public Game(String host, Player[] players, GameType type, SupportedLanguages language, Team blueTeam, Team redTeam) {
-        this.mGameID = UUID.randomUUID();
+        this.mGameID = Integer.parseInt(UUID.randomUUID().toString().substring(0,8)); // Shortens UUID for convenience and enables storage as int
         assert !(host.equals("")) : "Hostname cannot be empty";
         this.mHost = host;
         assert players.length == 4 : "The number of Players is incorrect";
+        this.mPlayers = new Player[] {new Player(players[0]), new Player(players[1]), new Player(players[2]), new Player(players[3])};
         this.mType = type;
         this.mLanguage = language;
+        this.mBlueTeam = new Team(blueTeam);
+        this.mRedTeam = new Team(redTeam);
         this.mFirstTeam = TeamColor.BLUE;
-        this.mBoard = new Board(this.mFirstTeam);
+        this.mBoard = new Board(type, this.mFirstTeam);
         this.mTurn = PlayerRoles.BLUE_SPYMASTER;
         this.mRemainingGuesses = 0;
         this.mWinner = Optional.empty();
         this.mLog = new ArrayList<String>();
-
-        try {
-            this.mPlayers = new Player[]{(Player) players[0].clone(), (Player) players[1].clone(), (Player) players[2].clone(), (Player) players[3].clone()};
-            this.mBlueTeam = (Team) blueTeam.clone();
-            this.mRedTeam = (Team) redTeam.clone();
-        }
-
-        catch (CloneNotSupportedException e){
-            // Will (hopefully 99.999999%) never occur!
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went terribly wrong!");
-        }
     }
 
     public void setPlayerRole(String playerName, PlayerRoles role) throws NoSuchElementException {
@@ -121,7 +113,7 @@ public class Game {
         return log;
     }
 
-    public UUID getGameID() {
+    public int getGameID() {
         return mGameID;
     }
 
@@ -131,25 +123,11 @@ public class Game {
 
     public void setPlayers(Player[] players) {
         assert players.length == 4 : "The number of Players is incorrect";
-        try {
-            this.mPlayers = new Player[]{(Player) players[0].clone(), (Player) players[1].clone(), (Player) players[2].clone(), (Player) players[3].clone()};
-        }
-
-        catch (CloneNotSupportedException e){
-            // Will (hopefully 99.999999%) never occur!
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went terribly wrong!");
-        }
+        this.mPlayers = new Player[] {new Player(players[0]), new Player(players[1]), new Player(players[2]), new Player(players[3])};
     }
 
     public Player[] getPlayers() {
-        try {
-            return new Player[]{(Player) mPlayers[0].clone(), (Player) mPlayers[1].clone(), (Player) mPlayers[2].clone(), (Player) mPlayers[3].clone()};
-        }
-
-        catch (CloneNotSupportedException e){
-            // Will (hopefully 99.999999%) never occur!
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went terribly wrong!");
-        }
+        return new Player[] {new Player(mPlayers[0]), new Player(mPlayers[1]), new Player(mPlayers[2]), new Player(mPlayers[3])};
     }
 
     public void setGameType(GameType type) {
