@@ -30,6 +30,40 @@ public class TeamClassTest {
     }
 
     @Test
+    public void teamSpymasterSetterNotAcceptParameterEmptyString() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Team testTeam = new Team(TeamColor.BLUE);
+            testTeam.setSpymaster("");
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Playername cannot be empty";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void teamOperativeSetterNotAcceptParameterEmptyString() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Team testTeam = new Team(TeamColor.BLUE);
+            testTeam.setOperative("");
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Playername cannot be empty";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
     public void teamCopyConstructorCreatesDeepCopy() {
         
         Team testTeam = new Team(TeamColor.BLUE);

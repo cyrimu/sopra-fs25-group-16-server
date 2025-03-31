@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 
 import java.util.Optional;
+import java.lang.IllegalArgumentException;
 
 public class Team {
     final TeamColor mColor;
@@ -38,8 +39,10 @@ public class Team {
         return mColor;
     }
 
-    public void setSpymaster(String playerName) {
-        assert !(playerName.equals("")) : "Playername cannot be empty";
+    public void setSpymaster(String playerName) throws IllegalArgumentException {
+        if (playerName.equals("")) {
+            throw new IllegalArgumentException("Playername cannot be empty");
+        }
         this.mSpymaster = playerName;
     }
 
@@ -47,8 +50,10 @@ public class Team {
         return (mSpymaster == null) ? Optional.empty() : Optional.of(mSpymaster);
     }
 
-    public void setOperative(String playerName) {
-        assert !(playerName.equals("")) : "Playername cannot be empty";
+    public void setOperative(String playerName) throws IllegalArgumentException {
+        if (playerName.equals("")) {
+            throw new IllegalArgumentException("Playername cannot be empty");
+        }
         this.mOperative = playerName;
     }
 
