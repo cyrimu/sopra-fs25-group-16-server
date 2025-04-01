@@ -31,4 +31,7 @@ public interface DTOMapper {
   @Mapping(source = "username", target = "username")
   @Mapping(source = "status", target = "status")
   UserGetDTO convertEntityToUserGetDTO(User user);
+
+
+  // need to align about the DTO for game with Cyril
 }
