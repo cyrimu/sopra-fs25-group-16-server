@@ -11,20 +11,19 @@ import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.NoSuchElementException;
 import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 import java.lang.RuntimeException;
 
 
 public class Game {
     public static final int ID_LENGTH = 8;
     public static final int MAX_NUM_PLAYERS = 4;
+    public static final int MIN_NUM_PLAYERS = 4;
 
     final String mGameID;
     final String mHost;
@@ -191,9 +190,13 @@ public class Game {
         String errorMessage = null;
         boolean validInput = true;
         if (players == null) {throw new NullPointerException("Class Game; fillPlayerArray: List of Players cannot be null");}
-        else if (players.length != MAX_NUM_PLAYERS) {
+        else if (players.length > MAX_NUM_PLAYERS) {
             validInput = false;
             errorMessage = String.format("Class Game; fillPlayerArray: Only Maximally %2d Players can play", MAX_NUM_PLAYERS);
+        }
+        else if (players.length < MIN_NUM_PLAYERS) {
+            validInput = false;
+            errorMessage = String.format("Class Game; fillPlayerArray: A Minimum of %2d Players is needed", MIN_NUM_PLAYERS);
         }
         else if (!allPlayernamesUnique(players)) {
             validInput = false;

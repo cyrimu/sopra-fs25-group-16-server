@@ -18,7 +18,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.NoSuchElementException;
-import java.util.NoSuchElementException;
+import java.lang.IllegalArgumentException;
+import java.lang.RuntimeException;
+import java.lang.NullPointerException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -184,64 +186,198 @@ public class GameClassTest {
             assertEquals(storedPlayers[i].getTeam().get(), testPlayers[i].getTeam().get());
         }
     }
+
+    @Test
+    public void gameConstructorDoesNotAcceptGameIDNull() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            Game testGame = new Game(null, "Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; Game Constructor: GameID cannot be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorDoesNotAcceptHostNull() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), null, testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; Game Constructor: Host parameter cannot be null or empty";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorDoesNotAcceptGameTypeNull() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "Me", testPlayers, null, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; Game Constructor: GameType parameter cannot be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorDoesNotAcceptLanguageNull() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "Me", testPlayers, GameType.TEXT, null);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; Game Constructor: Language parameter cannot be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorDoesNotAcceptPlayersNull() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "Me", null, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; createTeams: List of Players cannot be null";
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorGameIDTooLong() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Game testGame = new Game("aaaaaaaaaa", "Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = String.format("Class Game; Game Constructor: GameID needs to be of correct length: %2d", Game.ID_LENGTH);
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorGameIDTooShort() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Game testGame = new Game("a", "Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = String.format("Class Game; Game Constructor: GameID needs to be of correct length: %2d", Game.ID_LENGTH);
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorNotAcceptPlayerWithoutRoleInPlayers() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Player[] testPlayers = {    new Player("A", PlayerRoles.BLUE_SPYMASTER), 
+                                        new Player("B"), 
+                                        new Player("C", PlayerRoles.RED_SPYMASTER), 
+                                        new Player("D", PlayerRoles.RED_OPERATIVE)};
+                                        
+            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; createTeams: All Players need an assigned Role";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorNotAcceptDuplicateRolesInPlayers() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Player[] testPlayers = {    new Player("A", PlayerRoles.BLUE_SPYMASTER), 
+                                        new Player("B", PlayerRoles.BLUE_SPYMASTER), 
+                                        new Player("C", PlayerRoles.RED_SPYMASTER), 
+                                        new Player("D", PlayerRoles.RED_OPERATIVE)};
+                                        
+            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; createTeams: To each role only one Player may be assigned";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorNotAcceptNotEnoughPlayersInPlayers() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Player[] testPlayers = {    new Player("A", PlayerRoles.BLUE_SPYMASTER), 
+                                        new Player("C", PlayerRoles.RED_SPYMASTER), 
+                                        new Player("D", PlayerRoles.RED_OPERATIVE)};
+                                        
+            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = String.format("Class Game; fillPlayerArray: A Minimum of %2d Players is needed", Game.MIN_NUM_PLAYERS);
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void gameConstructorNotAcceptNonUniquePlayerNames() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Player[] testPlayers = {    new Player("A", PlayerRoles.BLUE_SPYMASTER), 
+                                        new Player("A", PlayerRoles.BLUE_OPERATIVE), 
+                                        new Player("C", PlayerRoles.RED_SPYMASTER), 
+                                        new Player("D", PlayerRoles.RED_OPERATIVE)};
+                                        
+            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; fillPlayerArray: All playerNames must be unique";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
 }
-//     @Test
-//     public void playerTwoParameterConstructor_Succeds() {
-
-//         Player testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
-
-//         assertEquals(testPlayer.getPlayerName(), "kevin");
-//         assertEquals(testPlayer.getRole().get(), PlayerRoles.BLUE_SPYMASTER);
-//         assertEquals(testPlayer.getTeam().get(), TeamColor.BLUE);
-//     }
-
-//     @Test
-//     public void playerConstructorNotAcceptEmptyString() {
-//         Exception exception = assertThrows( 
-//             IllegalArgumentException.class, 
-//             () -> {
-//             Player testPlayer = new Player("", PlayerRoles.BLUE_SPYMASTER);
-//             },
-//             "Expected previous Instruction to throw, but it did not."
-//             );
-
-//         String expectedMessage = "Playername cannot be empty";
-//         String actualMessage = exception.getMessage();
-
-//         assertTrue(actualMessage.contains(expectedMessage));
-//     }
-
-//     @Test
-//     public void playerConstructorNotAcceptNull() {
-//         Exception exception = assertThrows( 
-//             IllegalArgumentException.class, 
-//             () -> {
-//             Player testPlayer = new Player(null, PlayerRoles.BLUE_SPYMASTER);
-//             },
-//             "Expected previous Instruction to throw, but it did not."
-//             );
-
-//         String expectedMessage = "Playername cannot be empty";
-//         String actualMessage = exception.getMessage();
-
-//         assertTrue(actualMessage.contains(expectedMessage));
-//     }
-
-//     @Test
-//     public void playerCopyConstructorCreatesDeepCopy() {
-        
-//         Player testPlayer = new Player("kevin", PlayerRoles.BLUE_SPYMASTER);
-//         Player testCopy = new Player(testPlayer);
-        
-//         // Assert fields are correctly copied.
-//         assertEquals(testPlayer.getPlayerName(), testCopy.getPlayerName());
-//         assertEquals(testPlayer.getRole().get(), testCopy.getRole().get());
-//         assertEquals(testPlayer.getTeam().get(), testCopy.getTeam().get());
-
-//         // Modify copy -> No modification of original should occur.
-//         testCopy.setRole(PlayerRoles.RED_OPERATIVE);
-
-//         assertNotSame(testPlayer.getRole().get(), testCopy.getRole().get());
-//         assertNotSame(testPlayer.getTeam().get(), testCopy.getTeam().get());
-//     }
-// }
