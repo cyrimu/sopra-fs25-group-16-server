@@ -10,6 +10,7 @@ import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.classes.Team;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
+import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 
@@ -60,15 +61,11 @@ public class GameService {
 
     // helper function for creating the API during development (will be removed later)
     public Game createSampleGame() {
-        Player p1 = new Player("Alice");
-        Player p2 = new Player("Bob");
-        Player p3 = new Player("Carol");
-        Player p4 = new Player("David");
+        Player p1 = new Player("Alice", PlayerRoles.BLUE_SPYMASTER);
+        Player p2 = new Player("Bob", PlayerRoles.BLUE_OPERATIVE);
+        Player p3 = new Player("Carol", PlayerRoles.RED_SPYMASTER);
+        Player p4 = new Player("David", PlayerRoles.RED_OPERATIVE);
         Player[] players = new Player[] { p1, p2, p3, p4 };
-
-        // Create placeholder teams (assuming a Team constructor)
-        Team blueTeam = new Team(TeamColor.BLUE);
-        Team redTeam = new Team(TeamColor.RED);
 
         // Build the new game with example values
         Game newGame = new Game(
@@ -76,11 +73,8 @@ public class GameService {
             players, 
             GameType.TEXT, 
             SupportedLanguages.ENGLISH, 
-            blueTeam, 
-            redTeam
         );
 
         return newGame;
     }
-
 }
