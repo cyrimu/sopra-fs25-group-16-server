@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.IllegalArgumentException;
-
+import java.lang.NullPointerException;
 
 public class CardFactoryTest {
 
@@ -49,7 +49,7 @@ public class CardFactoryTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Class CardFactory; createTextCard: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+        String expectedMessage = "Class TextCard; isValidWord: String cannot be empty.";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -58,14 +58,14 @@ public class CardFactoryTest {
     @Test
     public void textCardConstructorNotAcceptNullWord() {
         Exception exception = assertThrows( 
-            IllegalArgumentException.class, 
+            NullPointerException.class, 
             () -> {
             testCard = creator.createTextCard(CardColor.WHITE, null);
             },
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Class CardFactory; createTextCard: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+        String expectedMessage = "Class TextCard; isValidWord: Null is not accepted";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -74,7 +74,7 @@ public class CardFactoryTest {
     @Test
     public void textCardConstructorNotAcceptNullColor() {
         Exception exception = assertThrows( 
-            IllegalArgumentException.class, 
+            NullPointerException.class, 
             () -> {
             testCard = creator.createTextCard(null, "Tree");
             },
@@ -97,7 +97,7 @@ public class CardFactoryTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Class CardFactory; createTextCard: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+        String expectedMessage = "Class TextCard; isValidWord: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -106,7 +106,7 @@ public class CardFactoryTest {
     @Test
     public void copyCardNotAcceptNullCard() {
         Exception exception = assertThrows( 
-            IllegalArgumentException.class, 
+            NullPointerException.class, 
             () -> {
             Card testCopy = creator.copyCard(null);
             },

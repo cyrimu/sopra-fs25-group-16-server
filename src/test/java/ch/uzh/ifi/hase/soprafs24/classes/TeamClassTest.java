@@ -86,4 +86,20 @@ public class TeamClassTest {
         assertNotSame(testTeam.getSpymaster().get(), testCopy.getSpymaster().get());
         assertNotSame(testTeam.getOperative().get(), testCopy.getOperative().get());
     }
+
+    @Test
+    public void teamCopyConstructorNotAcceptNull() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            Team testCopy = new Team((Team) null);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Team; Copy Constructor: Was used with null vallue";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
 }

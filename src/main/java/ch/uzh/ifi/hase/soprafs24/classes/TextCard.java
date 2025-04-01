@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 
 import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 
 // In Order to avoid creating factories (Which are somewhat enforced by Java) null fields are temporaryly used for Exception handling
 public class TextCard extends Card<String> {
@@ -17,19 +18,15 @@ public class TextCard extends Card<String> {
         super(that.getType(), that.getColor(), (String) that.getContent(), that.getIsRevealed());
     }
 
-    public static boolean isValidWord(String word) {
-        if (word == null || word.equals("")) {
-            return false;
-        }
-
-        return word.matches("[a-zA-Z]+");
+    public static void isValidWord(String word) throws IllegalArgumentException, NullPointerException {
+        if (word == null) { throw new NullPointerException("Class TextCard; isValidWord: Null is not accepted");}
+        else if(word.equals("")) { throw new IllegalArgumentException("Class TextCard; isValidWord: String cannot be empty.");}
+        else if (!(word.matches("[a-zA-Z]+"))) { throw new IllegalArgumentException("Class TextCard; isValidWord: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.");};
     }
 
-    public void setContent(String word) throws IllegalArgumentException {
-        if (!(isValidWord(word))) {
-            throw new IllegalArgumentException("Class TextCard; setContent: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.");
-        }
-
+    public void setContent(String word) throws IllegalArgumentException, NullPointerException {
+        try {isValidWord(word);}
+        catch (Exception e) {throw e;}
         this.mContent = word;
     }
 }

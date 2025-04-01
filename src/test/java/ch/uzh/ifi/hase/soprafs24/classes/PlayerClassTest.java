@@ -15,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.IllegalArgumentException;
-
+import java.lang.NullPointerException;
 
 public class PlayerClassTest {
     @InjectMocks
@@ -63,14 +63,14 @@ public class PlayerClassTest {
     @Test
     public void playerConstructorNotAcceptNull() {
         Exception exception = assertThrows( 
-            IllegalArgumentException.class, 
+            NullPointerException.class, 
             () -> {
             testPlayer = new Player(null, PlayerRoles.BLUE_SPYMASTER);
             },
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Class Player; Player Constructor: Playername cannot be empty";
+        String expectedMessage = "Class Player; Player Constructor: Playername cannot be null";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -90,5 +90,21 @@ public class PlayerClassTest {
 
         assertNotSame(testPlayer.getRole().get(), testCopy.getRole().get());
         assertNotSame(testPlayer.getTeam().get(), testCopy.getTeam().get());
+    }
+
+    @Test
+    public void playerCopyConstructorNotAcceptNull() { 
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            testPlayer = new Player((Player) null);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Player; Copy Constructor: Was used with null vallue";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 }

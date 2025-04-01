@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 
 
 public class BoardClassTest {
@@ -41,7 +42,7 @@ public class BoardClassTest {
     @Test
     public void boardConstructorNotAcceptGameTypeNull() {
         Exception exception = assertThrows( 
-            IllegalArgumentException.class, 
+            NullPointerException.class, 
             () -> {
             testBoard = new Board(null, TeamColor.BLUE, SupportedLanguages.ENGLISH);
             },
@@ -57,7 +58,7 @@ public class BoardClassTest {
     @Test
     public void boardConstructorNotAcceptFirstTeamNull() {
         Exception exception = assertThrows( 
-            IllegalArgumentException.class, 
+            NullPointerException.class, 
             () -> {
             testBoard = new Board(GameType.TEXT, null, SupportedLanguages.ENGLISH);
             },
@@ -73,7 +74,7 @@ public class BoardClassTest {
     @Test
     public void boardConstructorNotAcceptLanguageNull() {
         Exception exception = assertThrows( 
-            IllegalArgumentException.class, 
+            NullPointerException.class, 
             () -> {
             testBoard = new Board(GameType.TEXT, TeamColor.BLUE, null);
             },

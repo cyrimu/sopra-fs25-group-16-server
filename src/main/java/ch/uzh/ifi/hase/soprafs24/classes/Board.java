@@ -11,7 +11,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import java.util.Random;
 import java.util.ArrayList;
 
-import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 import java.lang.RuntimeException;
 
 public class Board {
@@ -27,13 +27,13 @@ public class Board {
 
     Card[] mCards;
 
-    public Board(GameType gameType, TeamColor firstTeam, SupportedLanguages language) throws IllegalArgumentException {
+    public Board(GameType gameType, TeamColor firstTeam, SupportedLanguages language) throws NullPointerException {
         String errorMessage = null;
         boolean validInput = true;
         if (gameType == null) {validInput = false; errorMessage = "Class Board; Board Constructor: GameType parameter may not be null";}
         else if (firstTeam == null) {validInput = false; errorMessage = "Class Board; Board Constructor: FirstTeam parameter may not be null";}
         else if (language == null) {validInput = false; errorMessage = "Class Board; Board Constructor: Language parameter may not be null";}
-        if (!validInput) {throw new IllegalArgumentException(errorMessage);}
+        if (!validInput) {throw new NullPointerException(errorMessage);}
 
         if (!((NUM_CARDS_FIRST_TEAM + NUM_CARDS_SECOND_TEAM + NUM_CARDS_BLACK + NUM_CARDS_WHITE) == (BOARD_SIZE))) {
             validInput = false;

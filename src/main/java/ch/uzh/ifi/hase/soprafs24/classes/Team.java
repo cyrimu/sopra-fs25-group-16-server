@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 
 import java.util.Optional;
 import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 
 public class Team {
     final TeamColor mColor;
@@ -22,8 +23,8 @@ public class Team {
     }
 
     public Team(Team that) {
-        // Because this is Java no variables for simplified syntax is possible (Without creating another Factory ...)
-        this(that.getColor(), (that.getSpymaster().isPresent()) ? that.getSpymaster().get() : null, (that.getOperative().isPresent()) ? that.getOperative().get() : null);
+        // Because this is Java no variables for simplified syntax is possible (Without creating another Factory ...) Also null check via static Method ...
+        this(checkIfIsNull(that), (that.getSpymaster().isPresent()) ? that.getSpymaster().get() : null, (that.getOperative().isPresent()) ? that.getOperative().get() : null);
     }
 
     // ATTENTION: this method is potentially unsafe and array might contain null!!!!
@@ -40,9 +41,7 @@ public class Team {
     }
 
     public void setSpymaster(String playerName) throws IllegalArgumentException {
-        if (playerName != null && playerName.equals("")) {
-            throw new IllegalArgumentException("Team Class; setSpymaster: Playername cannot be empty");
-        }
+        if (playerName != null && playerName.equals("")) { throw new IllegalArgumentException("Team Class; setSpymaster: Playername cannot be empty");}
         this.mSpymaster = playerName;
     }
 
@@ -50,14 +49,18 @@ public class Team {
         return (mSpymaster == null) ? Optional.empty() : Optional.of(mSpymaster);
     }
 
-    public void setOperative(String playerName) throws IllegalArgumentException {
-        if (playerName != null && playerName.equals("")) {
-            throw new IllegalArgumentException("Team Class; setOperative: Playername cannot be empty");
-        }
+    public void setOperative(String playerName) throws IllegalArgumentException  {
+        if (playerName != null && playerName.equals("")) { throw new IllegalArgumentException("Team Class; setOperative: Playername cannot be empty");}
         this.mOperative = playerName;
     }
 
     public Optional<String> getOperative() {
         return (mOperative == null) ? Optional.empty() : Optional.of(mOperative);
+    }
+
+    // Since Java forces one to call constructor as first expression this monstosity was created.
+    private static TeamColor checkIfIsNull (Team t) throws NullPointerException {
+        if (t == null) {throw new NullPointerException("Class Team; Copy Constructor: Was used with null vallue");}
+        return t.getColor();
     }
 }
