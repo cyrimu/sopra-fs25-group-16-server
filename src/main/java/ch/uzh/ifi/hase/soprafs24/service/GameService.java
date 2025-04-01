@@ -76,7 +76,7 @@ public class GameService {
             "Alice", 
             players, 
             GameType.TEXT, 
-            SupportedLanguages.ENGLISH, 
+            SupportedLanguages.ENGLISH
         );
 
         return newGame;

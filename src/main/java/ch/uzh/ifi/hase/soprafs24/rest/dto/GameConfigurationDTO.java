@@ -129,11 +129,6 @@ public class GameConfigurationDTO {
         Player b = (players[1] == null) ? null : new Player(players[1]);
         Player c = (players[2] == null) ? null : new Player(players[2]);
         Player d = (players[3] == null) ? null : new Player(players[3]);
-        // String aName = (a != null) ? a.getPlayerName() : null;
-        // String bName = (b != null) ? b.getPlayerName() : null;
-        // String cName = (c != null) ? c.getPlayerName() : null;
-        // String dName = (d != null) ? d.getPlayerName() : null;
-        // if (1==1){throw new IllegalStateException(String.format("%s | %s | %s | %s", aName, bName, cName, dName));}
         return new Player[] {a, b, c, d};
     }
 

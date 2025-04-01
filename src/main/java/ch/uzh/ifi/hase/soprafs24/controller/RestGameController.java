@@ -47,8 +47,10 @@ public class RestGameController {
         }
         System.out.println("Handling createGame request");
 
+        // Commented Out in Order for compilation to work! Actual Logic will be implemented later.
         //Game newGameData = DTOMapper.INSTANCE.convertNewGameDTOtoEntity(newGameDTO);
-        Game createdGame = gameService.createGame(newGameDTO, username);
+        //Game createdGame = gameService.createGame(newGameDTO, username);
+        Game createdGame = gameService.createSampleGame();
         return createdGame;
     }
     
