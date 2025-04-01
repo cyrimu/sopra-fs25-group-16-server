@@ -67,11 +67,89 @@ public class GameClassTest {
         testConfiguration.setType(GameType.TEXT);
         testConfiguration.setLanguage(SupportedLanguages.ENGLISH);
 
-        Game testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH),"Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
     }
 
     @Test
-    public void gameConstructor_Succeds() {
+    public void gameAllParameterConstructorSucceds() {
+        assertNotNull(testGame.getGameID());
+        assertNotNull(testGame.getCards());
+        assertEquals(testGame.getHost(), "Me");
+        assertEquals(testGame.getGameType(), GameType.TEXT);
+        assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testGame.getRemainingGuesses(), 0);
+        assertTrue(!(testGame.getWinner().isPresent()));
+        assertEquals(testGame.getLog().length, 0);
+        assertEquals(testGame.getFirstTeam(), TeamColor.BLUE);
+
+        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+
+        assertEquals(testGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+    }
+
+    @Test
+    public void gameNoIDConstructorSucceds() {
+        testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+
+        assertNotNull(testGame.getGameID());
+        assertNotNull(testGame.getCards());
+        assertEquals(testGame.getHost(), "Me");
+        assertEquals(testGame.getGameType(), GameType.TEXT);
+        assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testGame.getRemainingGuesses(), 0);
+        assertTrue(!(testGame.getWinner().isPresent()));
+        assertEquals(testGame.getLog().length, 0);
+        assertEquals(testGame.getFirstTeam(), TeamColor.BLUE);
+
+        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+
+        assertEquals(testGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+    }
+
+    @Test
+    public void gameGameConfigurationNoIDConstructorSucceds() {
+        testGame = new Game(testConfiguration);
+
+        assertNotNull(testGame.getGameID());
+        assertNotNull(testGame.getCards());
+        assertEquals(testGame.getHost(), "Me");
+        assertEquals(testGame.getGameType(), GameType.TEXT);
+        assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testGame.getRemainingGuesses(), 0);
+        assertTrue(!(testGame.getWinner().isPresent()));
+        assertEquals(testGame.getLog().length, 0);
+        assertEquals(testGame.getFirstTeam(), TeamColor.BLUE);
+
+        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+
+        assertEquals(testGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+    }
+
+    @Test
+    public void gameGameConfigurationWithIDConstructorSucceds() {
+        testGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH), testConfiguration);
+
         assertNotNull(testGame.getGameID());
         assertNotNull(testGame.getCards());
         assertEquals(testGame.getHost(), "Me");

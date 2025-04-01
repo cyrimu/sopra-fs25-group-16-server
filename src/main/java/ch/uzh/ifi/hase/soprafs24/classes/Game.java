@@ -24,7 +24,7 @@ import java.lang.RuntimeException;
 
 public class Game {
     public static final int ID_LENGTH = 8;
-    public static final int NUM_PLAYERS = 4;
+    public static final int MAX_NUM_PLAYERS = 4;
 
     final String mGameID;
     final String mHost;
@@ -52,17 +52,16 @@ public class Game {
         this(UUID.randomUUID().toString().substring(0,ID_LENGTH), host, players, type, language);
     }
 
-    public Game(String gameID, String host, Player[] players, GameType type, SupportedLanguages language) {
+    public Game(String gameID, String host, Player[] players, GameType type, SupportedLanguages language) throws IllegalArgumentException, NullPointerException {
         String errorMessage = null;
         boolean validInput = true;
-        if (gameID == null || gameID.length() != ID_LENGTH) {
-            validInput = false;
-            errorMessage = String.format("Class Game; Game Constructor: GameID cannot be null and needs to be of correct length: %2d", ID_LENGTH);
-        }
+        if (gameID == null) {validInput = false; errorMessage = "Class Game; Game Constructor: GameID cannot be null";}
         else if (host == null || host.equals("")) {validInput = false; errorMessage = "Class Game; Game Constructor: Host parameter cannot be null or empty";}
         else if (type == null) {validInput = false; errorMessage = "Class Game; Game Constructor: GameType parameter cannot be null";}
         else if (language == null) {validInput = false; errorMessage = "Class Game; Game Constructor: Language parameter cannot be null";}
-        if (!validInput) {throw new IllegalArgumentException(errorMessage);}
+        if (!validInput) {throw new NullPointerException(errorMessage);}
+
+        if (gameID.length() != ID_LENGTH) {throw new IllegalArgumentException(String.format("Class Game; Game Constructor: GameID needs to be of correct length: %2d", ID_LENGTH));}
 
         this.mGameID = gameID;
         this.mHost = host;
@@ -178,28 +177,39 @@ public class Game {
         return mWinner;
     }
 
-    private void initializeTeamsAndPlayers(Player[] players) throws IllegalArgumentException {
+    private void initializeTeamsAndPlayers(Player[] players) throws IllegalArgumentException, NullPointerException {
         // ORDER IS IMPORTANT: REASON WHY HELPER FUNCTION EXISTS!
         this.createTeams(players);
-        this.setPlayers(players);
+        this.fillPlayerArray(players);
+        if (!(playerRolesAndTeamAssignmentMatch(players, mBlueTeam, mRedTeam))) {
+            throw new IllegalArgumentException("Class Game; initializeTeamsAndPlayers: Team Roles and Player Roles have to be the same");
+        }
+        this.assertAllRolesOccupied();
     }
 
-    private void setPlayers(Player[] players) throws IllegalArgumentException {
+    private void fillPlayerArray(Player[] players) throws IllegalArgumentException, NullPointerException {
         String errorMessage = null;
         boolean validInput = true;
-        if (players.length != NUM_PLAYERS) {errorMessage = String.format("Class Game; setPlayers: Only Exactly %2d Players can play", NUM_PLAYERS);}
-        else if (!allPlayernamesUnique(players)) {errorMessage = "Class Game; setPlayers: All playerNames must be unique";}
-        else if (players == null) {errorMessage = "Class Game; setPlayers: List of Players cannot be empty";}
-        else if (!playerRolesAndTeamAssignmentMatch(players, mBlueTeam, mRedTeam)) {
-            validInput = false; 
-            errorMessage = "Class Game; setPlayers: Player roles must match assignments in Teams";
+        if (players == null) {throw new NullPointerException("Class Game; fillPlayerArray: List of Players cannot be null");}
+        else if (players.length != MAX_NUM_PLAYERS) {
+            validInput = false;
+            errorMessage = String.format("Class Game; fillPlayerArray: Only Maximally %2d Players can play", MAX_NUM_PLAYERS);
+        }
+        else if (!allPlayernamesUnique(players)) {
+            validInput = false;
+            errorMessage = "Class Game; fillPlayerArray: All playerNames must be unique";
         }
         if (!validInput) {throw new IllegalArgumentException(errorMessage);}
 
-        this.mPlayers = new Player[] {new Player(players[0]), new Player(players[1]), new Player(players[2]), new Player(players[3])};
+        ArrayList<Player> playersToBeStored = new ArrayList<Player>(MAX_NUM_PLAYERS);
+        for (Player player: players) {
+            playersToBeStored.add(new Player(player));
+        }
+        this.mPlayers = playersToBeStored.toArray(new Player[0]);
     }
     
-    private void createTeams(Player[] players) throws IllegalArgumentException {
+    private void createTeams(Player[] players) throws IllegalArgumentException, NullPointerException {
+        if (players == null) {throw new NullPointerException("Class Game; createTeams: List of Players cannot be null");}
         this.mBlueTeam = new Team(TeamColor.BLUE);
         this.mRedTeam = new Team(TeamColor.RED);
         String errorMessage = "Class Game; createTeams: To each role only one Player may be assigned";
@@ -208,21 +218,33 @@ public class Game {
             PlayerRoles role = player.getRole().get();
             switch (role) {
                 case BLUE_SPYMASTER:
+                    // Change if Multiple Players can have same Role
                     if (mBlueTeam.getSpymaster().isPresent()) {throw new IllegalArgumentException(errorMessage);}
                     mBlueTeam.setSpymaster(player.getPlayerName());
                     break;
                 case BLUE_OPERATIVE:
+                    // Change if Multiple Players can have same Role
                     if (mBlueTeam.getOperative().isPresent())  {throw new IllegalArgumentException(errorMessage);}
                     mBlueTeam.setOperative(player.getPlayerName());
                     break;
                 case RED_SPYMASTER:
+                    // Change if Multiple Players can have same Role
                     if (mRedTeam.getSpymaster().isPresent()) {throw new IllegalArgumentException(errorMessage);}
                     mRedTeam.setSpymaster(player.getPlayerName());
                     break;
                 case RED_OPERATIVE:
+                    // Change if Multiple Players can have same Role
                     if (mRedTeam.getOperative().isPresent()) {throw new IllegalArgumentException(errorMessage);}
                     mRedTeam.setOperative(player.getPlayerName());
                     break;
+            }
+        }
+    }
+
+    private void assertAllRolesOccupied() throws IllegalArgumentException {
+        for (PlayerRoles role : PlayerRoles.values()) {
+            if (!(this.getNamebyRole(role).isPresent())) {
+                throw new IllegalArgumentException("Class Game; assertAllRolesOccupied: Atleast one Player needs to be assigned per role");
             }
         }
     }
@@ -237,12 +259,13 @@ public class Game {
         this.mLanguage = language;
     }
 
-    private void setFirstTeam(TeamColor team) {
+    private void setFirstTeam(TeamColor team) throws IllegalArgumentException {
         if (team == null) {throw new IllegalArgumentException("Class Game; setFirstTeam: Parameter cannot be null");}
         this.mFirstTeam = team;
     }
 
-    public static boolean allPlayernamesUnique(Player[] players) {
+    public static boolean allPlayernamesUnique(Player[] players) throws NullPointerException {
+        if (players == null) {throw new NullPointerException("Class Game; allPlayernamesUnique: List of Players cannot be null");}
         for (int i = 0; i < players.length; i++) {
             for (int j = i+1; j < players.length; j++) {
                 if (players[i].getPlayerName().equals(players[j].getPlayerName())) {
@@ -253,7 +276,10 @@ public class Game {
         return true;
     }
 
-    public static boolean playerRolesAndTeamAssignmentMatch(Player[] players, Team blueTeam, Team redTeam) {
+    public static boolean playerRolesAndTeamAssignmentMatch(Player[] players, Team blueTeam, Team redTeam) throws NullPointerException {
+        if (players == null) {throw new NullPointerException("Class Game; playerRolesAndTeamAssignmentMatch: List of Players cannot be null");}
+        else if (blueTeam == null || redTeam == null) {throw new NullPointerException("Class Game; playerRolesAndTeamAssignmentMatch: Team Parameter cannot be null");}
+
         int expectedNullCount = 0;
         if (!(blueTeam.getSpymaster().isPresent())) {expectedNullCount++;}
         if (!(blueTeam.getOperative().isPresent())) {expectedNullCount++;}
