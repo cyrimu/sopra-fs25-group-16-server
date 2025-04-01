@@ -13,10 +13,17 @@ public abstract class Card<T> {
     boolean mIsRevealed;
     
     protected Card(GameType type, CardColor color, T content, boolean isRevealed) throws IllegalArgumentException {
+        String errorMessage = null;
+        boolean validInput = true;
+        if (type == null) {validInput = false; errorMessage = "Class Card; Card Constructor: GameType parameter may not be null";}
+        else if (content == null) {validInput = false; errorMessage = "Class Card; Card Constructor: CardColor parameter may not be null";}
+        else if (color == null) {validInput = false; errorMessage = "Class Card; Card Constructor: Content parameter may not be null";}
+        if (!validInput) {throw new IllegalArgumentException(errorMessage);}
+        
         this.mType = type;
         this.mColor = color;
         this.mContent = content;
-        this.mIsRevealed = isRevealed;
+        this.setIsRevealed(isRevealed);
     }
 
     public GameType getType() {
@@ -31,7 +38,7 @@ public abstract class Card<T> {
         return mContent;
     }
 
-    public void setIsRevealed(boolean bool) {
+    public void setIsRevealed(boolean bool) throws IllegalArgumentException {
         this.mIsRevealed = bool;
     }
 

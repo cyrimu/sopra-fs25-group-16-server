@@ -49,14 +49,14 @@ public class CardFactoryTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+        String expectedMessage = "Class CardFactory; createTextCard: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    public void textCardConstructorNotAcceptNull() {
+    public void textCardConstructorNotAcceptNullWord() {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
@@ -65,7 +65,23 @@ public class CardFactoryTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+        String expectedMessage = "Class CardFactory; createTextCard: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void textCardConstructorNotAcceptNullColor() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            testCard = creator.createTextCard(null, "Tree");
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class CardFactory; createTextCard: CardColor parameter cannot be null";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -81,11 +97,28 @@ public class CardFactoryTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
+        String expectedMessage = "Class CardFactory; createTextCard: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
+
+    @Test
+    public void copyCardNotAcceptNullCard() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Card testCopy = creator.copyCard(null);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class CardFactory; copyCard: Card parameter may never be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
 
     @Test
     public void textCardCopyConstructorCreatesDeepCopy() {

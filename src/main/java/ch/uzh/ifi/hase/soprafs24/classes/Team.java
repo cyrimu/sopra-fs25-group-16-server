@@ -15,10 +15,10 @@ public class Team {
         this(color, null, null);
     }
 
-    protected Team(TeamColor color, String spymaster, String operative) {
+    protected Team(TeamColor color, String spymaster, String operative) throws IllegalArgumentException {
         this.mColor = color;
-        this.mSpymaster = spymaster;
-        this.mOperative = operative;
+        this.setSpymaster(spymaster);
+        this.setOperative(operative);
     }
 
     public Team(Team that) {
@@ -40,8 +40,8 @@ public class Team {
     }
 
     public void setSpymaster(String playerName) throws IllegalArgumentException {
-        if (playerName.equals("")) {
-            throw new IllegalArgumentException("Playername cannot be empty");
+        if (playerName != null && playerName.equals("")) {
+            throw new IllegalArgumentException("Team Class; setSpymaster: Playername cannot be empty");
         }
         this.mSpymaster = playerName;
     }
@@ -51,8 +51,8 @@ public class Team {
     }
 
     public void setOperative(String playerName) throws IllegalArgumentException {
-        if (playerName.equals("")) {
-            throw new IllegalArgumentException("Playername cannot be empty");
+        if (playerName != null && playerName.equals("")) {
+            throw new IllegalArgumentException("Team Class; setOperative: Playername cannot be empty");
         }
         this.mOperative = playerName;
     }

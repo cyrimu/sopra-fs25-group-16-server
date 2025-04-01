@@ -54,7 +54,7 @@ public class PlayerClassTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Playername cannot be empty";
+        String expectedMessage = "Class Player; Player Constructor: Playername cannot be empty";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -70,7 +70,7 @@ public class PlayerClassTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Playername cannot be empty";
+        String expectedMessage = "Class Player; Player Constructor: Playername cannot be empty";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));

@@ -39,6 +39,54 @@ public class BoardClassTest {
     }
 
     @Test
+    public void boardConstructorNotAcceptGameTypeNull() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            testBoard = new Board(null, TeamColor.BLUE, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Board; Board Constructor: GameType parameter may not be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void boardConstructorNotAcceptFirstTeamNull() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            testBoard = new Board(GameType.TEXT, null, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Board; Board Constructor: FirstTeam parameter may not be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void boardConstructorNotAcceptLanguageNull() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            testBoard = new Board(GameType.TEXT, TeamColor.BLUE, null);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Board; Board Constructor: Language parameter may not be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
     public void boardCardsAreShuffledUponCreation() {
         Card[] cards = testBoard.getCards();
 

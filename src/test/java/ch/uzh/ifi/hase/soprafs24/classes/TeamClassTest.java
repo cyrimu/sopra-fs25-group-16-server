@@ -46,7 +46,7 @@ public class TeamClassTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Playername cannot be empty";
+        String expectedMessage = "Team Class; setSpymaster: Playername cannot be empty";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));
@@ -62,7 +62,7 @@ public class TeamClassTest {
             "Expected previous Instruction to throw, but it did not."
             );
 
-        String expectedMessage = "Playername cannot be empty";
+        String expectedMessage = "Team Class; setOperative: Playername cannot be empty";
         String actualMessage = exception.getMessage();
 
         assertTrue(actualMessage.contains(expectedMessage));

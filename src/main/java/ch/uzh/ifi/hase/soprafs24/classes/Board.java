@@ -11,6 +11,9 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import java.util.Random;
 import java.util.ArrayList;
 
+import java.lang.IllegalArgumentException;
+import java.lang.RuntimeException;
+
 public class Board {
     public static final int BOARD_SIZE = 25;
     public static final int NUM_CARDS_FIRST_TEAM = 9;
@@ -24,9 +27,21 @@ public class Board {
 
     Card[] mCards;
 
-    public Board(GameType gameType, TeamColor firstTeam, SupportedLanguages language) {
-        assert (NUM_CARDS_FIRST_TEAM + NUM_CARDS_SECOND_TEAM + NUM_CARDS_BLACK + NUM_CARDS_WHITE) == (BOARD_SIZE) : "Constants do not add up!";
-        assert WORDS.length >= BOARD_SIZE : "Not enough unique words are stored to generate a game board!";
+    public Board(GameType gameType, TeamColor firstTeam, SupportedLanguages language) throws IllegalArgumentException {
+        String errorMessage = null;
+        boolean validInput = true;
+        if (gameType == null) {validInput = false; errorMessage = "Class Board; Board Constructor: GameType parameter may not be null";}
+        else if (firstTeam == null) {validInput = false; errorMessage = "Class Board; Board Constructor: FirstTeam parameter may not be null";}
+        else if (language == null) {validInput = false; errorMessage = "Class Board; Board Constructor: Language parameter may not be null";}
+        if (!validInput) {throw new IllegalArgumentException(errorMessage);}
+
+        if (!((NUM_CARDS_FIRST_TEAM + NUM_CARDS_SECOND_TEAM + NUM_CARDS_BLACK + NUM_CARDS_WHITE) == (BOARD_SIZE))) {
+            validInput = false;
+            errorMessage = "Class Board; Board Constructor: Board Constants do not add up!";
+        }
+        else if (!(WORDS.length >= BOARD_SIZE)) {validInput = false; errorMessage = "Class Board; Board Constructor: Not Enough Words for generation stored!";}
+        if (!validInput) {throw new RuntimeException(errorMessage);}
+
         rand = new Random();
 
         ArrayList<Card> cardList = new ArrayList<Card>(BOARD_SIZE);

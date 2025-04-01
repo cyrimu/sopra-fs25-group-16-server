@@ -18,7 +18,7 @@ public class Player {
 
     public Player(String name, PlayerRoles role) throws IllegalArgumentException {
         if (name == null || name.equals("")) {
-            throw new IllegalArgumentException("Playername cannot be empty");
+            throw new IllegalArgumentException("Class Player; Player Constructor: Playername cannot be empty");
         }
         this.mPlayerName = name;
         this.setRole(role);
@@ -35,7 +35,12 @@ public class Player {
 
     public void setRole(PlayerRoles role) {
         this.mRole = role;
-        this.mTeam = (role == PlayerRoles.BLUE_SPYMASTER || role == PlayerRoles.BLUE_OPERATIVE) ? TeamColor.BLUE : TeamColor.RED;
+        if (role != null) {
+            this.mTeam = (role == PlayerRoles.BLUE_SPYMASTER || role == PlayerRoles.BLUE_OPERATIVE) ? TeamColor.BLUE : TeamColor.RED;
+        }
+        else {
+            this.mTeam = null;
+        }
     }
 
     public Optional<PlayerRoles> getRole() {
