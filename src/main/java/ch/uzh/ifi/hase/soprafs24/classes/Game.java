@@ -36,7 +36,7 @@ public class Game {
     PlayerRoles mTurn;
     TeamColor mFirstTeam;
     int mRemainingGuesses;
-    Optional<TeamColor> mWinner;
+    TeamColor mWinner;
     ArrayList<String> mLog;
 
     public Game(GameConfigurationDTO gameConfiguration) {
@@ -83,7 +83,7 @@ public class Game {
         this.mTurn = (this.getFirstTeam() == TeamColor.BLUE) ? PlayerRoles.BLUE_SPYMASTER : PlayerRoles.RED_SPYMASTER;
         this.mBoard = new Board(type, this.mFirstTeam, this.mLanguage);
         this.mRemainingGuesses = 0;
-        this.mWinner = Optional.empty();
+        this.mWinner = null;
         this.mLog = new ArrayList<String>();
     }
 
@@ -176,7 +176,7 @@ public class Game {
     }
 
     public Optional<TeamColor> getWinner() {
-        return mWinner;
+        return (mWinner == null) ? Optional.empty() : Optional.of(mWinner);
     }
 
     private void initializeTeamsAndPlayers(Player[] players) throws IllegalArgumentException, NullPointerException {
