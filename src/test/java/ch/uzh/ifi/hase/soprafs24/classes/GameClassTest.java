@@ -43,7 +43,7 @@ public class GameClassTest {
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
 
     private GameConfigurationDTO testConfiguration = new GameConfigurationDTO();
-    private Game testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+    private Game testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
 
 
     @BeforeEach
@@ -56,7 +56,7 @@ public class GameClassTest {
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
 
         testConfiguration.setID(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH));
-        testConfiguration.setHost("Me");
+        testConfiguration.setHost("A");
         testConfiguration.addPlayer(testPlayers[0]);
         testConfiguration.addPlayer(testPlayers[1]);
         testConfiguration.addPlayer(testPlayers[2]);
@@ -69,14 +69,14 @@ public class GameClassTest {
         testConfiguration.setType(GameType.TEXT);
         testConfiguration.setLanguage(SupportedLanguages.ENGLISH);
 
-        testGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH),"Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH),"A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
     }
 
     @Test
     public void gameAllParameterConstructorSucceds() {
         assertNotNull(testGame.getGameID());
         assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "Me");
+        assertEquals(testGame.getHost(), "A");
         assertEquals(testGame.getGameType(), GameType.TEXT);
         assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
         assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
@@ -98,11 +98,11 @@ public class GameClassTest {
 
     @Test
     public void gameNoIDConstructorSucceds() {
-        testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
 
         assertNotNull(testGame.getGameID());
         assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "Me");
+        assertEquals(testGame.getHost(), "A");
         assertEquals(testGame.getGameType(), GameType.TEXT);
         assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
         assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
@@ -128,7 +128,7 @@ public class GameClassTest {
 
         assertNotNull(testGame.getGameID());
         assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "Me");
+        assertEquals(testGame.getHost(), "A");
         assertEquals(testGame.getGameType(), GameType.TEXT);
         assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
         assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
@@ -154,7 +154,7 @@ public class GameClassTest {
 
         assertNotNull(testGame.getGameID());
         assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "Me");
+        assertEquals(testGame.getHost(), "A");
         assertEquals(testGame.getGameType(), GameType.TEXT);
         assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
         assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
@@ -192,7 +192,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(null, "Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testGame = new Game(null, "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -224,7 +224,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "Me", testPlayers, null, SupportedLanguages.ENGLISH);
+            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", testPlayers, null, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -240,7 +240,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "Me", testPlayers, GameType.TEXT, null);
+            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", testPlayers, GameType.TEXT, null);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -256,7 +256,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "Me", null, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", null, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -271,7 +271,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Game testGame = new Game("aaaaaaaaaa", "Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testGame = new Game("aaaaaaaaaa", "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -287,7 +287,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Game testGame = new Game("a", "Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testGame = new Game("a", "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -308,7 +308,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -329,7 +329,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -349,7 +349,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -370,7 +370,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -380,4 +380,26 @@ public class GameClassTest {
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
+
+    @Test
+    public void gameConstructorNotAcceptHostNotInPlayers() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            Player[] testPlayers = {    new Player("A", PlayerRoles.BLUE_SPYMASTER), 
+                                        new Player("B", PlayerRoles.BLUE_OPERATIVE), 
+                                        new Player("C", PlayerRoles.RED_SPYMASTER), 
+                                        new Player("D", PlayerRoles.RED_OPERATIVE)};
+                                        
+            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class Game; Game Constructor: Host must be a Player";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
 }

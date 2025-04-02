@@ -62,10 +62,18 @@ public class Game {
 
         if (gameID.length() != ID_LENGTH) {throw new IllegalArgumentException(String.format("Class Game; Game Constructor: GameID needs to be of correct length: %2d", ID_LENGTH));}
 
+
         this.mGameID = gameID;
-        this.mHost = host;
         // Helper Function in order to ensure correct order of Initializing Teams and Players;
         this.initializeTeamsAndPlayers(players);
+        
+        // Needs to occur after Players intialization -> Check if host in Players
+        boolean hostFound = false;
+        for (Player player : this.mPlayers) {
+            if (player.getPlayerName().equals(host)) {hostFound = true;}
+        }
+        if (hostFound) {this.mHost = host;}
+        else {throw new IllegalArgumentException("Class Game; Game Constructor: Host must be a Player");}
 
         // Reason for private setter to reset Game state on finishing of Game -> Avoid verification duplication
         this.setGameType(type);
@@ -113,23 +121,18 @@ public class Game {
         return opt;
     }
 
-    private void logOperativeTurn(PlayerRoles role, String word) throws IllegalArgumentException {
-        if (!(role == PlayerRoles.BLUE_OPERATIVE || role == PlayerRoles.RED_OPERATIVE)) {
-            throw new IllegalArgumentException("You can only log turns of Operatives with this Function!");
-        }
-        String logMessage = "%s guessed the following word: %s";
-        String playerName = getNamebyRole(role).get();
-        mLog.add(String.format(logMessage, playerName, word));
-    }
-
-    private void logSpyMasterTurn(PlayerRoles role, String word) throws IllegalArgumentException {
-        if (!(role == PlayerRoles.BLUE_SPYMASTER || role == PlayerRoles.RED_SPYMASTER)) {
-            throw new IllegalArgumentException("You can only log turns of Spymasters with this Function!");
-        }
-        String logMessage = "%s provided the following Hint: %s";
-        String playerName = playerName = getNamebyRole(role).get();
-        mLog.add(String.format(logMessage, playerName, word));
-    }
+    // private void logTurn(PlayerRoles role, String word) throws IllegalArgumentException {
+    //     String playerName = getNamebyRole(role).get();
+    //     String roleMessage = "";
+    //     if ((role == PlayerRoles.BLUE_OPERATIVE || role == PlayerRoles.RED_OPERATIVE)) {
+    //         roleMessage = " guessed the following word: ";
+    //     }
+    //     else {
+    //         roleMessage = " provided the following Hint: ";
+    //     }
+    //     String logMessage = "%s" + roleMessage + "%s";
+    //     mLog.add(String.format(logMessage, playerName, word));
+    // }
 
     public String[] getLog() {
         String[] log = mLog.toArray(new String[0]);
