@@ -4,9 +4,6 @@ import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.classes.Team;
 import ch.uzh.ifi.hase.soprafs24.classes.Board;
-
-import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
-
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
@@ -42,7 +39,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
 
-    private GameConfigurationDTO testConfiguration = new GameConfigurationDTO();
+    private GameConfiguration testConfiguration = new GameConfiguration();
     private Game testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
 
 

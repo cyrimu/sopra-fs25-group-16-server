@@ -9,8 +9,6 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 
-import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
-
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -39,11 +37,11 @@ public class Game {
     TeamColor mWinner;
     ArrayList<String> mLog;
 
-    public Game(GameConfigurationDTO gameConfiguration) {
+    public Game(GameConfiguration gameConfiguration) {
         this(UUID.randomUUID().toString().substring(0,ID_LENGTH), gameConfiguration.getHost(), gameConfiguration.getPlayers(), gameConfiguration.getType(), gameConfiguration.getLanguage());
     }
 
-    public Game(String gameID, GameConfigurationDTO gameConfiguration) {
+    public Game(String gameID, GameConfiguration gameConfiguration) {
         this(gameID, gameConfiguration.getHost(), gameConfiguration.getPlayers(), gameConfiguration.getType(), gameConfiguration.getLanguage());
     }
 
