@@ -4,39 +4,28 @@ import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 
 import java.util.Optional;
+import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 
-
-public class Player implements Cloneable {
+public class Player {
     final String mPlayerName;
     PlayerRoles mRole;
     TeamColor mTeam;
 
-    private boolean teamAndRoleMatch(PlayerRoles role, TeamColor color) {
-        if (mRole == null || mTeam == null ) {
-            return true;
-        }
-
-        if (color.equals(TeamColor.RED)){
-            return role == PlayerRoles.RED_SPYMASTER || role == PlayerRoles.RED_OPERATIVE;
-        }
-        else {
-            return role == PlayerRoles.BLUE_SPYMASTER || role == PlayerRoles.BLUE_OPERATIVE;
-        }
+    public Player(String name) throws IllegalArgumentException {
+        this(name, null);
     }
 
-    public Player(String name, PlayerRoles role, TeamColor color) {
-        assert !(name.equals("")) && name != null : "Playername cannot be empty";
-        assert teamAndRoleMatch(role, color) : "Team Color and role must match!";
+    public Player(String name, PlayerRoles role) throws IllegalArgumentException, NullPointerException {
+        if (name == null) {throw new NullPointerException("Class Player; Player Constructor: Playername cannot be null");}
+        if (name.equals("")) {throw new IllegalArgumentException("Class Player; Player Constructor: Playername cannot be empty");}
         this.mPlayerName = name;
-        this.mRole = role;
-        this.mTeam = color;
+        this.setRole(role);
     }
 
-    public Player (String name) {
-        assert !(name.equals("")) && name != null : "Playername cannot be empty";
-        this.mPlayerName = name;
-        this.mRole = null;
-        this.mTeam = null;
+    public Player(Player that) {
+        // Because this is Java no variables for simplified syntax is possible (Without creating another Factory ...) Also null check via static Method ...
+        this(checkIfIsNull(that),(that.getRole().isPresent()) ? that.getRole().get() : null);
     }
 
     public String getPlayerName(){
@@ -45,7 +34,12 @@ public class Player implements Cloneable {
 
     public void setRole(PlayerRoles role) {
         this.mRole = role;
-        this.mTeam = (role == PlayerRoles.BLUE_SPYMASTER || role == PlayerRoles.BLUE_OPERATIVE) ? TeamColor.BLUE : TeamColor.RED;
+        if (role != null) {
+            this.mTeam = (role == PlayerRoles.BLUE_SPYMASTER || role == PlayerRoles.BLUE_OPERATIVE) ? TeamColor.BLUE : TeamColor.RED;
+        }
+        else {
+            this.mTeam = null;
+        }
     }
 
     public Optional<PlayerRoles> getRole() {
@@ -56,9 +50,9 @@ public class Player implements Cloneable {
         return (mRole == null) ? Optional.empty() : Optional.of(mTeam);
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        // Returning a clone of the current object
-        return super.clone();
+    // Since Java forces one to call constructor as first expression this monstosity was created.
+    private static String checkIfIsNull (Player p) throws NullPointerException {
+        if (p == null) {throw new NullPointerException("Class Player; Copy Constructor: Was used with null vallue");}
+        return p.getPlayerName();
     }
 }

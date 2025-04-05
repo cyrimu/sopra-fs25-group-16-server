@@ -1,53 +1,32 @@
 package ch.uzh.ifi.hase.soprafs24.classes;
 
+import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 
+import java.lang.IllegalArgumentException;
+import java.lang.NullPointerException;
 
-public class TextCard {
-    final GameType mType;
-    boolean mIsRevealed;
-    final CardColor mColor;
-    String mContent;
+// In Order to avoid creating factories (Which are somewhat enforced by Java) null fields are temporaryly used for Exception handling
+public class TextCard extends Card<String> {
 
-    private static boolean isValidWord(String word) {
-        if (word == null || word.isEmpty()) {
-            return false;
-        }
-
-        return word.matches("[a-zA-Z]+");
+    public TextCard(CardColor color, String word) {
+        super(GameType.TEXT, color, word, false);
     }
 
-    TextCard(String word, CardColor color) {
-        assert isValidWord(word) : "Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
-        this.mType = GameType.TEXT;
-        this.mIsRevealed = false;
-        this.mColor = color;
+    public TextCard(Card that) {
+        super(that.getType(), that.getColor(), (String) that.getContent(), that.getIsRevealed());
+    }
+
+    public static void isValidWord(String word) throws IllegalArgumentException, NullPointerException {
+        if (word == null) { throw new NullPointerException("Class TextCard; isValidWord: Null is not accepted");}
+        else if(word.equals("")) { throw new IllegalArgumentException("Class TextCard; isValidWord: String cannot be empty.");}
+        else if (!(word.matches("[a-zA-Z]+"))) { throw new IllegalArgumentException("Class TextCard; isValidWord: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.");};
+    }
+
+    public void setContent(String word) throws IllegalArgumentException, NullPointerException {
+        try {isValidWord(word);}
+        catch (Exception e) {throw e;}
         this.mContent = word;
-    }
-
-    public GameType getType() {
-        return mType;
-    }
-
-    public void setIsRevealed(boolean bool) {
-        this.mIsRevealed = bool;
-    }
-
-    public boolean getIsRevealed() {
-        return mIsRevealed;
-    }
-
-    public CardColor getColor() {
-        return mColor;
-    }
-
-    public void setContent(String content) {
-        assert !(content == null || content.equals("")) : "String cannot be empty on Card!";
-        this.mContent = content;
-    }
-
-    public String getContent() {
-        return mContent;
     }
 }

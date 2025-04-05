@@ -9,6 +9,9 @@ import ch.uzh.ifi.hase.soprafs24.classes.Clue;
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.classes.Team;
+
+import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
+
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
@@ -49,7 +52,8 @@ public class GameService {
         return retrievedGame;
     }
 
-    public Game createGame(String newGameData, String username) {
+    // Created sample object feel free to modify GameConfigurationDTO however you want (i.e. instantiate it in Lobby and Lobby uses GmaeService etc.)
+    public Game createGame(GameConfigurationDTO newGameData) {
         System.out.println("Handling createGame request");
         System.out.println(newGameData);
         // creating game placeholder for API development
@@ -72,7 +76,7 @@ public class GameService {
             "Alice", 
             players, 
             GameType.TEXT, 
-            SupportedLanguages.ENGLISH, 
+            SupportedLanguages.ENGLISH
         );
 
         return newGame;
