@@ -5,7 +5,6 @@ public class Clue {
     private Integer clueNumber;
     private String username;
     
-    public Clue() {}
     public Clue(String clueText, Integer clueNumber, String username) {
         this.clueText = clueText;
         this.clueNumber = clueNumber;

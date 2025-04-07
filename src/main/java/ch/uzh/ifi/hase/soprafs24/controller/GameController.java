@@ -43,7 +43,7 @@ public class GameController {
 
         // Call GameService
         
-        Game payload = gameService.handleClue(clue);
+        Game payload = gameService.handleClue(gameID, clue);
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
     }
 
@@ -54,7 +54,7 @@ public class GameController {
 
         // Call GameService
         
-        String payload = "Guess recieved";
+        String payload = "Guess received";
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
     }
     

@@ -119,6 +119,10 @@ public class Game {
         return opt;
     }
 
+    public void logTurn(String logMessage) {
+        mLog.add(logMessage);
+    }
+
     public String[] getLog() {
         String[] log = mLog.toArray(new String[0]);
         return log;
@@ -152,8 +156,23 @@ public class Game {
         return mFirstTeam;
     }
 
+    public PlayerRoles increaseTurn (int num) {
+        if (num < 0) {throw new IllegalArgumentException("Class Game; increaseTurn: number must be >= 0");}
+
+        int index = mTurn.ordinal();
+        int nextIndex = index + num;
+        PlayerRoles[] roles = PlayerRoles.values();
+        nextIndex %= roles.length;
+        mTurn = roles[nextIndex];
+        return mTurn;
+    }
+
     public PlayerRoles getTurn() {
         return mTurn;
+    }
+
+    public void setRemainingGuesses(int num) {
+        mRemainingGuesses = num;
     }
 
     public int getRemainingGuesses() {
@@ -162,6 +181,10 @@ public class Game {
 
     public Optional<TeamColor> getWinner() {
         return (mWinner == null) ? Optional.empty() : Optional.of(mWinner);
+    }
+
+    public int getBoardSize() {
+        return mBoard.BOARD_SIZE;
     }
 
     private void initializeTeamsAndPlayers(Player[] players) throws IllegalArgumentException, NullPointerException {
