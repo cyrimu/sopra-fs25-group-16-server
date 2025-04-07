@@ -119,19 +119,6 @@ public class Game {
         return opt;
     }
 
-    // private void logTurn(PlayerRoles role, String word) throws IllegalArgumentException {
-    //     String playerName = getNamebyRole(role).get();
-    //     String roleMessage = "";
-    //     if ((role == PlayerRoles.BLUE_OPERATIVE || role == PlayerRoles.RED_OPERATIVE)) {
-    //         roleMessage = " guessed the following word: ";
-    //     }
-    //     else {
-    //         roleMessage = " provided the following Hint: ";
-    //     }
-    //     String logMessage = "%s" + roleMessage + "%s";
-    //     mLog.add(String.format(logMessage, playerName, word));
-    // }
-
     public String[] getLog() {
         String[] log = mLog.toArray(new String[0]);
         return log;
