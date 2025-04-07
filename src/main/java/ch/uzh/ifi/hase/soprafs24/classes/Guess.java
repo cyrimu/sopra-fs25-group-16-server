@@ -10,11 +10,11 @@ public class Guess {
         this.username = username;
     }
 
-    public Integer getcardNumber() {
+    public Integer getCardNumber() {
         return cardNumber;
     }
 
-    public void setcardNumber(Integer cardNumber) {
+    public void setCardNumber(Integer cardNumber) {
         this.cardNumber = cardNumber;
     }
 

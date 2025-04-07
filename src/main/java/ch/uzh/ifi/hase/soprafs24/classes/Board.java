@@ -116,4 +116,8 @@ public class Board {
         }
         return copiedCards.toArray(new Card[0]);
     }
+
+    public void revealCard(int index) {
+        mCards[index].setIsRevealed(true);
+    }
 }

@@ -140,6 +140,10 @@ public class Game {
         return new Player[] {new Player(mPlayers[0]), new Player(mPlayers[1]), new Player(mPlayers[2]), new Player(mPlayers[3])};
     }
 
+    public void revealCard(int cardIndex) {
+        mBoard.revealCard(cardIndex);
+    }
+
     public Card[] getCards() {
         return mBoard.getCards();
     }
@@ -177,6 +181,12 @@ public class Game {
 
     public int getRemainingGuesses() {
         return mRemainingGuesses;
+    }
+
+    public void setWinner(TeamColor color) {
+        if (color == null) {throw new NullPointerException("Class Game; setWinner: color cannot be null");}
+
+        mWinner = color;
     }
 
     public Optional<TeamColor> getWinner() {

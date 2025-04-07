@@ -43,17 +43,22 @@ public class GameController {
 
         // Call GameService
         
-        Game payload = gameService.handleClue(gameID, clue);
+        Game payload = gameService.handleClue(clue);
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
     }
 
     @MessageMapping("/game/{gameId}/guess")
     public void handleProvideGuess(@DestinationVariable String gameId, Guess guess) {
         System.out.println("Received guess for game " + gameId);
-        System.out.println("Guess: " + guess.getcardNumber() + " Username: " + guess.getUsername());
+        System.out.println("Guess: " + guess.getCardNumber() + " Username: " + guess.getUsername());
 
         // Call GameService
-        
+
+
+        Game modifiedGame = gameService.handleGuess(guess);
+
+        // REVIEW(PIO): Don't understand why payload is not of Type Game, please extract relevant Data from game for payload (getTurn()?)
+
         String payload = "Guess received";
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
     }
