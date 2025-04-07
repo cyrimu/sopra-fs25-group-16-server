@@ -17,27 +17,36 @@ import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
+import ch.uzh.ifi.hase.soprafs24.deserializer.CardAdapter;
 
 import java.util.Optional;
 
+import com.google.gson.Gson; 
+import com.google.gson.GsonBuilder; 
+import com.google.gson.TypeAdapter; 
 import com.google.gson.Gson;
 
 @Service
 @Transactional
 public class GameService {
-    private static final Gson gson = new Gson();
+    private static final GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Card.class, new CardAdapter());  
+    private static final Gson gson = builder.create(); 
 
     public static Game createGame(GameConfiguration gameConfig) {
         System.out.println("Handling createGame request");
         
         Game newGame = new Game(gameConfig);
 
-        //Store in database
-        
+        String json = gson.toJson(newGame);
+        // Store in database somehow
+
         return newGame;
     }
 
     private static Game loadFromDatabase(String gameID) {
+
+         // String json = {Insert MongoDB query}
+         // Game loadedGame = gson.fromJson(json, Game.class);
         return createSampleGame(0);
     }
 
@@ -284,7 +293,7 @@ public class GameService {
             SupportedLanguages.ENGLISH
         );
         newGame.increaseTurn(num);
-        
+
         return newGame;
     }
 }

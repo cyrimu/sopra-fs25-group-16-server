@@ -10,6 +10,10 @@ import java.lang.NullPointerException;
 // In Order to avoid creating factories (Which are somewhat enforced by Java) null fields are temporaryly used for Exception handling
 public class TextCard extends Card<String> {
 
+    public TextCard(CardColor color, String word, boolean bool) {
+        super(GameType.TEXT, color, word, bool);
+    }
+
     public TextCard(CardColor color, String word) {
         super(GameType.TEXT, color, word, false);
     }

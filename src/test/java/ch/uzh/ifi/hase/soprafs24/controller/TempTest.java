@@ -20,6 +20,8 @@ import org.mockito.MockitoAnnotations;
 
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -115,6 +117,46 @@ public class TempTest {
     //         () -> {
     //         Guess guess = new Guess(1, "Bob");
     //         Game modifiedGame = gameService.handleGuess(guess);
+    //         },
+    //         "Expected previous Instruction to throw, but it did not."
+    //         );
+
+    //     String expectedMessage = "Only maximally the whole Boardsize can be used for the Guessnumber";
+    //     String actualMessage = exception.getMessage();
+
+    //     if (1==1){
+    //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, actualMessage);
+    //     }
+
+    //     assertTrue(actualMessage.contains(expectedMessage));
+    // }
+
+     // Debugging Test which will deleted later
+    // @Test
+    // public void Testing() {
+    //     Exception exception = assertThrows( 
+    //         ResponseStatusException.class, 
+    //         () -> {
+    //         Player[] testPlayers = new Player[] {    new Player("A", PlayerRoles.BLUE_SPYMASTER), 
+    //                                     new Player("B", PlayerRoles.BLUE_OPERATIVE), 
+    //                                     new Player("C", PlayerRoles.RED_SPYMASTER), 
+    //                                     new Player("D", PlayerRoles.RED_OPERATIVE)};
+            
+    //         GameConfiguration testConfiguration = new GameConfiguration();
+    //         testConfiguration.setID(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH));
+    //         testConfiguration.setHost("A");
+    //         testConfiguration.addPlayer(testPlayers[0]);
+    //         testConfiguration.addPlayer(testPlayers[1]);
+    //         testConfiguration.addPlayer(testPlayers[2]);
+    //         testConfiguration.addPlayer(testPlayers[3]);
+
+    //         testConfiguration.setPlayerRole("A", PlayerRoles.BLUE_SPYMASTER);
+    //         testConfiguration.setPlayerRole("B", PlayerRoles.BLUE_OPERATIVE);
+    //         testConfiguration.setPlayerRole("C", PlayerRoles.RED_SPYMASTER);
+    //         testConfiguration.setPlayerRole("D", PlayerRoles.RED_OPERATIVE);
+    //         testConfiguration.setType(GameType.TEXT);
+    //         testConfiguration.setLanguage(SupportedLanguages.ENGLISH);
+    //         Game createdGame = GameService.createGame(testConfiguration);
     //         },
     //         "Expected previous Instruction to throw, but it did not."
     //         );

@@ -23,8 +23,6 @@ public class Board {
 
     private static final String[] WORDS = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
     private static final CardFactory creator =  new CardFactory();
-    private final Random rand;
-
     Card[] mCards;
 
     public Board(GameType gameType, TeamColor firstTeam, SupportedLanguages language) throws NullPointerException {
@@ -41,8 +39,6 @@ public class Board {
         }
         else if (!(WORDS.length >= BOARD_SIZE)) {validInput = false; errorMessage = "Class Board; Board Constructor: Not Enough Words for generation stored!";}
         if (!validInput) {throw new RuntimeException(errorMessage);}
-
-        rand = new Random();
 
         ArrayList<Card> cardList = new ArrayList<Card>(BOARD_SIZE);
         CardColor colorFirstTeam = (firstTeam == TeamColor.RED) ? CardColor.RED : CardColor.BLUE;
@@ -66,6 +62,7 @@ public class Board {
 
 
     private void generateCards(int number, GameType gameType, CardColor cardType, ArrayList<Card> list) {
+        Random rand = new Random();
         int index = rand.nextInt(WORDS.length);
         for (int i = 0; i < number; i++) {
             if (gameType == GameType.TEXT) {
@@ -93,6 +90,7 @@ public class Board {
     }
 
     private void shuffleCards() {
+        Random rand = new Random();
         final int NUMBER_SWAPS = 3;
         int swap1;
         int swap2;
