@@ -7,11 +7,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Clue;
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
+import ch.uzh.ifi.hase.soprafs24.classes.GameConfiguration;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.classes.Team;
-
-import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
-
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
@@ -52,13 +50,11 @@ public class GameService {
         return retrievedGame;
     }
 
-    // Created sample object feel free to modify GameConfigurationDTO however you want (i.e. instantiate it in Lobby and Lobby uses GmaeService etc.)
-    public Game createGame(GameConfigurationDTO newGameData) {
+    // Created sample object feel free to modify GameConfiguration however you want (i.e. instantiate it in Lobby and Lobby uses GmaeService etc.)
+    public Game createGame(GameConfiguration gameConfiguration) {
         System.out.println("Handling createGame request");
-        System.out.println(newGameData);
-        // creating game placeholder for API development
-
-        Game newGame = createSampleGame();
+        
+        Game newGame = new Game(gameConfiguration);
         
         return newGame;
     }

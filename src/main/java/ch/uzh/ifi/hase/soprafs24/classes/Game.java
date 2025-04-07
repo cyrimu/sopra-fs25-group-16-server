@@ -9,8 +9,6 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 
-import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
-
 import java.util.UUID;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -39,11 +37,11 @@ public class Game {
     TeamColor mWinner;
     ArrayList<String> mLog;
 
-    public Game(GameConfigurationDTO gameConfiguration) {
+    public Game(GameConfiguration gameConfiguration) {
         this(UUID.randomUUID().toString().substring(0,ID_LENGTH), gameConfiguration.getHost(), gameConfiguration.getPlayers(), gameConfiguration.getType(), gameConfiguration.getLanguage());
     }
 
-    public Game(String gameID, GameConfigurationDTO gameConfiguration) {
+    public Game(String gameID, GameConfiguration gameConfiguration) {
         this(gameID, gameConfiguration.getHost(), gameConfiguration.getPlayers(), gameConfiguration.getType(), gameConfiguration.getLanguage());
     }
 
@@ -120,19 +118,6 @@ public class Game {
         }
         return opt;
     }
-
-    // private void logTurn(PlayerRoles role, String word) throws IllegalArgumentException {
-    //     String playerName = getNamebyRole(role).get();
-    //     String roleMessage = "";
-    //     if ((role == PlayerRoles.BLUE_OPERATIVE || role == PlayerRoles.RED_OPERATIVE)) {
-    //         roleMessage = " guessed the following word: ";
-    //     }
-    //     else {
-    //         roleMessage = " provided the following Hint: ";
-    //     }
-    //     String logMessage = "%s" + roleMessage + "%s";
-    //     mLog.add(String.format(logMessage, playerName, word));
-    // }
 
     public String[] getLog() {
         String[] log = mLog.toArray(new String[0]);

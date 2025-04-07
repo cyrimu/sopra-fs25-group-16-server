@@ -12,6 +12,7 @@ public class Player {
     PlayerRoles mRole;
     TeamColor mTeam;
 
+
     public Player(String name) throws IllegalArgumentException {
         this(name, null);
     }
