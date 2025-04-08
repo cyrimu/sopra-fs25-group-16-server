@@ -10,6 +10,8 @@ import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
+import ch.uzh.ifi.hase.soprafs24.classes.DeepLTranslator;
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,13 +46,13 @@ public class TempTest {
 
     @Test
     public void handleInvalidClueWordOnBoard() {
-        Clue clue = new Clue("A", 2, "Alice");
+        Clue clue = new Clue("ace", 2, "Alice");
         Game modifiedGame = gameService.handleClue(clue);
 
         assertEquals(modifiedGame.getTurn(), PlayerRoles.RED_SPYMASTER);
         assertEquals(modifiedGame.getRemainingGuesses(), 0);
         assertEquals(modifiedGame.getLog().length, 1);
-        assertEquals(modifiedGame.getLog()[0], String.format("%s provided the Clue: %s : %d", "Alice", "A", 2));
+        assertEquals(modifiedGame.getLog()[0], String.format("%s provided the Clue: %s : %d", "Alice", "ace", 2));
     }
 
     @Test
@@ -103,68 +105,6 @@ public class TempTest {
     //     String actualMessage = exception.getMessage();
 
     //     if (1==1) {
-    //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, actualMessage);
-    //     }
-
-    //     assertTrue(actualMessage.contains(expectedMessage));
-    // }
-
-    // Debugging Test which will deleted later
-    // @Test
-    // public void Testing() {
-    //     Exception exception = assertThrows( 
-    //         ResponseStatusException.class, 
-    //         () -> {
-    //         Guess guess = new Guess(1, "Bob");
-    //         Game modifiedGame = gameService.handleGuess(guess);
-    //         },
-    //         "Expected previous Instruction to throw, but it did not."
-    //         );
-
-    //     String expectedMessage = "Only maximally the whole Boardsize can be used for the Guessnumber";
-    //     String actualMessage = exception.getMessage();
-
-    //     if (1==1){
-    //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, actualMessage);
-    //     }
-
-    //     assertTrue(actualMessage.contains(expectedMessage));
-    // }
-
-     // Debugging Test which will deleted later
-    // @Test
-    // public void Testing() {
-    //     Exception exception = assertThrows( 
-    //         ResponseStatusException.class, 
-    //         () -> {
-    //         Player[] testPlayers = new Player[] {    new Player("A", PlayerRoles.BLUE_SPYMASTER), 
-    //                                     new Player("B", PlayerRoles.BLUE_OPERATIVE), 
-    //                                     new Player("C", PlayerRoles.RED_SPYMASTER), 
-    //                                     new Player("D", PlayerRoles.RED_OPERATIVE)};
-            
-    //         GameConfiguration testConfiguration = new GameConfiguration();
-    //         testConfiguration.setID(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH));
-    //         testConfiguration.setHost("A");
-    //         testConfiguration.addPlayer(testPlayers[0]);
-    //         testConfiguration.addPlayer(testPlayers[1]);
-    //         testConfiguration.addPlayer(testPlayers[2]);
-    //         testConfiguration.addPlayer(testPlayers[3]);
-
-    //         testConfiguration.setPlayerRole("A", PlayerRoles.BLUE_SPYMASTER);
-    //         testConfiguration.setPlayerRole("B", PlayerRoles.BLUE_OPERATIVE);
-    //         testConfiguration.setPlayerRole("C", PlayerRoles.RED_SPYMASTER);
-    //         testConfiguration.setPlayerRole("D", PlayerRoles.RED_OPERATIVE);
-    //         testConfiguration.setType(GameType.TEXT);
-    //         testConfiguration.setLanguage(SupportedLanguages.ENGLISH);
-    //         Game createdGame = GameService.createGame(testConfiguration);
-    //         },
-    //         "Expected previous Instruction to throw, but it did not."
-    //         );
-
-    //     String expectedMessage = "Only maximally the whole Boardsize can be used for the Guessnumber";
-    //     String actualMessage = exception.getMessage();
-
-    //     if (1==1){
     //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, actualMessage);
     //     }
 

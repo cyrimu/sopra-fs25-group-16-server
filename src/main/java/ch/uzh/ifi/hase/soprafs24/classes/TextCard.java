@@ -25,7 +25,11 @@ public class TextCard extends Card<String> {
     public static void isValidWord(String word) throws IllegalArgumentException, NullPointerException {
         if (word == null) { throw new NullPointerException("Class TextCard; isValidWord: Null is not accepted");}
         else if(word.equals("")) { throw new IllegalArgumentException("Class TextCard; isValidWord: String cannot be empty.");}
-        else if (!(word.matches("[a-zA-Z]+"))) { throw new IllegalArgumentException("Class TextCard; isValidWord: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.");};
+
+        //Maybe later write proper Regex for this but disabled for now since translation uses a lot more symbols...
+        // else if (!(word.matches("[a-zA-Z]+"))) { 
+        //     String message = String.format("Class TextCard; isValidWord: Only Strings which consist solely out of letters can be used not: %s", word);
+        //     throw new IllegalArgumentException(message);};
     }
 
     public void setContent(String word) throws IllegalArgumentException, NullPointerException {

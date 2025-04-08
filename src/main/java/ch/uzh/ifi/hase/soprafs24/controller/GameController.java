@@ -69,6 +69,10 @@ public class GameController {
         System.out.println("username: " + username);
 
         // Call GameService
+        Game modifiedGame = gameService.handleSkip(username);
+
+        // REVIEW(PIO): Don't understand why payload is not of Type Game, please extract relevant Data from game for payload (getTurn()?)
+
         
         String payload = "Received skip from: " + username;
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);

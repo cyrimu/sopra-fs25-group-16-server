@@ -26,6 +26,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter; 
 import com.google.gson.Gson;
 
+import com.deepl.api.*;
+
 @Service
 @Transactional
 public class GameService {
@@ -36,8 +38,13 @@ public class GameService {
         System.out.println("Handling createGame request");
         
         Game newGame = new Game(gameConfig);
-
         String json = gson.toJson(newGame);
+
+        if (1==1) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, json);
+        }
+
+        // String json = gson.toJson(newGame);
         // Store in database somehow
 
         return newGame;
