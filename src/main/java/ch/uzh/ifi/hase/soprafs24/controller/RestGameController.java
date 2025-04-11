@@ -22,12 +22,6 @@ import java.util.UUID;
 @RestController
 public class RestGameController {
 
-    private final GameService gameService;
-
-    public RestGameController(GameService gameService) {
-        this.gameService = gameService;
-    }
-
     @GetMapping("/game/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -39,9 +33,8 @@ public class RestGameController {
         }
 
         // Fetch the game
-        Game retrievedGame = gameService.getGame(gameId, username);
+        Game retrievedGame = GameService.loadFromDatabase(gameId, username);
         
-
         return retrievedGame;
     }
 
@@ -57,7 +50,7 @@ public class RestGameController {
         // converting rest object into internal representation of gameConfig
         GameConfiguration gameConfig = convertGameConfigurationDTOtoGameConfiguration(gameConfigurationDTO);
 
-        Game createdGame = gameService.createGame(gameConfig);
+        Game createdGame = GameService.createGame(gameConfig);
         return createdGame;
     }
 

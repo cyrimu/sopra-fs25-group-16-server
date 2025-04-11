@@ -17,6 +17,14 @@ jobs:
     steps:
     # checkout repository code
     - uses: actions/checkout@v4
+
+    # Replacing Environment Variables
+#    - name: Replace secrets in Goggles App Engine Deployment File
+#      uses: 73h/gae-app-yaml-replace-env-variables@v0.3
+#      env:
+#        DEEPL_API_KEY : ${{ secrets.DEEPL_API_KEY}}
+#      with:
+#        app_yaml_path: "app.yaml"
       
     # docker QEMU preparation
     - name: Set up QEMU

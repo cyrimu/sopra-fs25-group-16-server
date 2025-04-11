@@ -1,5 +1,34 @@
 package ch.uzh.ifi.hase.soprafs24.constant;
 
 public enum SupportedLanguages {
-    ENGLISH;
+    ARABIC,
+    BULGARIAN,
+    CZECH,
+    DANISH,
+    GERMAN,
+    GREEK,
+    ENGLISH,
+    SPANISH,
+    ESTONIAN,
+    FINNISH,
+    FRENCH,
+    HUNGARIAN,
+    INDONESIAN,
+    ITALIAN,
+    JAPANESE,
+    KOREAN,
+    LITHUANIAN,
+    LATVIAN,
+    NORWEGIAN,
+    DUTCH,
+    POLISH,
+    PORTUGUESE,
+    ROMANIAN,
+    RUSSIAN,
+    SLOVAK,
+    SLOVENIAN,
+    SWEDISH,
+    TURKISH,
+    UKRAINIAN,
+    CHINESE;
 }
