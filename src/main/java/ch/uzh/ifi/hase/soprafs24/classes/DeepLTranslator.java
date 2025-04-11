@@ -6,9 +6,14 @@ import java.lang.RuntimeException;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import com.deepl.api.*;
 
+import org.springframework.beans.factory.annotation.Value;
+
+
 public class DeepLTranslator {
-    // Make secret in codebase on github
-    private static final String authKey = Config.DeepLAPIKey;
+ //   @Value("${DEEPL_API_KEY}") // deepl.key
+ //   private static String DEEPL_API_KEY;
+
+    private static final String authKey = "607f0b29-2e43-4455-adf8-938d1842bbcf:fx";
     private static final Translator translator = new Translator(authKey);
     private static final EnumMap<SupportedLanguages, String> languageMap = new EnumMap<>(Map.ofEntries(
         Map.entry(SupportedLanguages.ARABIC, "AR"),

@@ -110,4 +110,13 @@ public class TempTest {
 
     //     assertTrue(actualMessage.contains(expectedMessage));
     // }
+
+    // @Test
+    // public void Testing() {
+    //     String actualMessage = DeepLTranslator.translateWord("eye", SupportedLanguages.GERMAN);
+
+    //     if (1==1) {
+    //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, actualMessage);
+    //     }
+    // }
 }
