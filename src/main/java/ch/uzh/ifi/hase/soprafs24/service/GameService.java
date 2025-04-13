@@ -31,6 +31,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.ReplaceOptions;
 import com.google.gson.Gson;
 
 import com.deepl.api.*;
@@ -45,16 +46,12 @@ public class GameService {
     private static MongoCollection<Document> gamesCollection = database.getCollection("games"); 
 
 
-    public static Game createGame(GameConfiguration gameConfig) {
+    public Game createGame(GameConfiguration gameConfig) {
         System.out.println("Handling createGame request");
         
         // create a new game with the given configuration
         Game newGame = new Game(gameConfig);
-        String json = gson.toJson(newGame);
-
-        // storing the game in the InMemoryStore & database
-        Document gameDocument = Document.parse(json);
-        gamesCollection.insertOne(gameDocument);
+        saveGame(newGame);
         InMemoryStore.putGame(newGame.getGameID(), newGame);
 
         return newGame;
@@ -65,16 +62,18 @@ public class GameService {
         // retrieve the game from the database using the gameId
         Document query = new Document("mGameID", gameId); 
         Document gameDocument = gamesCollection.find(query).first(); 
-        String gameJson = gameDocument.toJson();
-        
-        // convert the JSON string back to a Game object
-        Game loadedGame = gson.fromJson(gameJson, Game.class);
-        InMemoryStore.putGame(loadedGame.getGameID(), loadedGame);
-
-        return loadedGame;
+        if (gameDocument != null) {
+            String gameJson = gameDocument.toJson();
+            // convert the JSON string back to a Game object
+            Game loadedGame = gson.fromJson(gameJson, Game.class);
+            InMemoryStore.putGame(loadedGame.getGameID(), loadedGame);
+            return loadedGame;
+        } else {
+            return null; // Game not found in the database
+        }
     }
 
-    public static Game retrieveGame(String gameId, String username) {
+    public Game retrieveGame(String gameId, String username) {
         System.out.println("Handling getGame request for game: " + gameId); 
         
         Game retrievedGame = InMemoryStore.getGame(gameId);
@@ -150,7 +149,8 @@ public class GameService {
         String logMessage = String.format("%s provided the Clue: %s : %d", username, clueMessage, guesses);
         currentGame.logTurn(logMessage);
 
-        // TODO: Update Database with info
+        
+        saveGame(currentGame);
         InMemoryStore.putGame(currentGame.getGameID(), currentGame);
         
         return currentGame;
@@ -266,7 +266,8 @@ public class GameService {
         String logMessage = String.format("%s made the guess: %s", username, guessMessage);
         currentGame.logTurn(logMessage);
 
-        // TODO: Update Database with info
+        
+        saveGame(currentGame);
         InMemoryStore.putGame(currentGame.getGameID(), currentGame);
         
         return currentGame;
@@ -298,7 +299,8 @@ public class GameService {
         String logMessage = String.format("%s skipped the turn", username);
         currentGame.logTurn(logMessage);
 
-        // TODO: Update Database with info
+        
+        saveGame(currentGame);
         InMemoryStore.putGame(currentGame.getGameID(), currentGame);
         
         return currentGame;
@@ -318,6 +320,15 @@ public class GameService {
         if (playerRole.get() != currentGame.getTurn()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "It is not yet the given users turn");
         }
+    }
+
+    private void saveGame(Game game) {
+        String json = gson.toJson(game);
+        Document gameDocument = Document.parse(json);
+
+        Document filter = new Document("mGameID", game.getGameID());
+        ReplaceOptions options = new ReplaceOptions().upsert(true);
+        gamesCollection.replaceOne(filter, gameDocument, options);
     }
 
     
