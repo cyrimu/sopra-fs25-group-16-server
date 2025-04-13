@@ -47,6 +47,10 @@ public class Player {
         return (mRole == null) ? Optional.empty() : Optional.of(mRole);
     }
 
+    public void setTeam(TeamColor team) {
+        this.mTeam = team;
+    }
+
     public Optional<TeamColor> getTeam() {
         return (mRole == null) ? Optional.empty() : Optional.of(mTeam);
     }

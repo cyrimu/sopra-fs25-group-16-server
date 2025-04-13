@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.controller;
+package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Clue;
@@ -11,7 +11,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
 import ch.uzh.ifi.hase.soprafs24.classes.DeepLTranslator;
-
+import ch.uzh.ifi.hase.soprafs24.classes.InMemoryStore;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,10 +33,24 @@ public class TempTest {
     @InjectMocks
     private GameService gameService = new GameService();
 
+    private Game testGame;
+
+    @BeforeEach
+    public void setup() {
+        Player p1 = new Player("Alice", PlayerRoles.BLUE_SPYMASTER);
+        Player p2 = new Player("Bob", PlayerRoles.BLUE_OPERATIVE);
+        Player p3 = new Player("Carol", PlayerRoles.RED_SPYMASTER);
+        Player p4 = new Player("David", PlayerRoles.RED_OPERATIVE);
+        Player[] players = new Player[] { p1, p2, p3, p4 };
+        testGame = new Game("Alice", players, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testGame = GameService.createSampleGame(0);
+        InMemoryStore.putGame("1", testGame);
+    }
+
     @Test
     public void handleValidClue() {
         Clue clue = new Clue("Fish", 2, "Alice");
-        Game modifiedGame = gameService.handleClue(clue);
+        Game modifiedGame = gameService.handleClue("1", clue);
 
         assertEquals(modifiedGame.getTurn(), PlayerRoles.BLUE_OPERATIVE);
         assertEquals(modifiedGame.getRemainingGuesses(), 3);
@@ -47,7 +61,7 @@ public class TempTest {
     @Test
     public void handleInvalidClueWordOnBoard() {
         Clue clue = new Clue("ace", 2, "Alice");
-        Game modifiedGame = gameService.handleClue(clue);
+        Game modifiedGame = gameService.handleClue("1",clue);
 
         assertEquals(modifiedGame.getTurn(), PlayerRoles.RED_SPYMASTER);
         assertEquals(modifiedGame.getRemainingGuesses(), 0);
@@ -61,7 +75,7 @@ public class TempTest {
             ResponseStatusException.class, 
             () -> {
             Clue clue = new Clue("Fish", 2, "Beta");
-            Game modifiedGame = gameService.handleClue(clue);
+            Game modifiedGame = gameService.handleClue("1",clue);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -78,7 +92,7 @@ public class TempTest {
             ResponseStatusException.class, 
             () -> {
             Clue clue = new Clue("Fish", 2, "Carol");
-            Game modifiedGame = gameService.handleClue(clue);
+            Game modifiedGame = gameService.handleClue("1",clue);
             },
             "Expected previous Instruction to throw, but it did not."
             );

@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 import ch.uzh.ifi.hase.soprafs24.classes.Lobby;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyUpdateDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
 import ch.uzh.ifi.hase.soprafs24.service.LobbyService;
 
 import org.springframework.http.HttpStatus;
@@ -116,12 +117,23 @@ public class RestLobbyController {
 
     // For now we use this to construct a new lobby onject which will be used as an update injection for the lobby
     private Lobby convertLobbyUpdateDTOToLobby(LobbyUpdateDTO dto) {
-        // converting  PlayerDTOs to Players
-        Player[] players = new Player[dto.getPlayers().length];
-        for (int i = 0; i < dto.getPlayers().length; i++) {
-            players[i] = new Player(dto.getPlayers()[i].getPlayerName());
+        PlayerDTO[] playerDTOs = dto.getPlayers();
+        Player[] players = new Player[playerDTOs.length];
+        for (int i = 0; i < playerDTOs.length; i++) {
+            PlayerDTO currentDTO = playerDTOs[i];
+            if (currentDTO != null) {
+                players[i] = new Player(currentDTO.getPlayerName());
+                if (currentDTO.getRole() != null) {
+                    players[i].setRole(currentDTO.getRole());
+                }
+                if (currentDTO.getTeam() != null) {
+                    players[i].setTeam(currentDTO.getTeam());
+                }
+            } else {
+                players[i] = null;
+            }
         }
-        
+
         return new Lobby(
             dto.getHost(),
             players,
