@@ -50,11 +50,16 @@ public class GameController {
     @MessageMapping("/game/{gameId}/guess")
     public void handleProvideGuess(@DestinationVariable String gameId, Guess guess) {
         System.out.println("Received guess for game " + gameId);
-        System.out.println("Guess: " + guess.getcardNumber() + " Username: " + guess.getUsername());
+        System.out.println("Guess: " + guess.getCardNumber() + " Username: " + guess.getUsername());
 
         // Call GameService
-        
-        String payload = "Guess recieved";
+
+
+        Game modifiedGame = gameService.handleGuess(guess);
+
+        // REVIEW(PIO): Don't understand why payload is not of Type Game, please extract relevant Data from game for payload (getTurn()?)
+
+        String payload = "Guess received";
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
     }
     
@@ -64,6 +69,10 @@ public class GameController {
         System.out.println("username: " + username);
 
         // Call GameService
+        Game modifiedGame = gameService.handleSkip(username);
+
+        // REVIEW(PIO): Don't understand why payload is not of Type Game, please extract relevant Data from game for payload (getTurn()?)
+
         
         String payload = "Received skip from: " + username;
         messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);

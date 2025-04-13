@@ -51,6 +51,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
     
     implementation 'com.google.code.gson:gson:2.12.1'
+
+    implementation "com.deepl.api:deepl-java:1.9.0"
 }
 
 bootJar {

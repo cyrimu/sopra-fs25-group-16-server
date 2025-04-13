@@ -119,6 +119,10 @@ public class Game {
         return opt;
     }
 
+    public void logTurn(String logMessage) {
+        mLog.add(logMessage);
+    }
+
     public String[] getLog() {
         String[] log = mLog.toArray(new String[0]);
         return log;
@@ -134,6 +138,10 @@ public class Game {
 
     public Player[] getPlayers() {
         return new Player[] {new Player(mPlayers[0]), new Player(mPlayers[1]), new Player(mPlayers[2]), new Player(mPlayers[3])};
+    }
+
+    public void revealCard(int cardIndex) {
+        mBoard.revealCard(cardIndex);
     }
 
     public Card[] getCards() {
@@ -152,16 +160,41 @@ public class Game {
         return mFirstTeam;
     }
 
+    public PlayerRoles increaseTurn (int num) {
+        if (num < 0) {throw new IllegalArgumentException("Class Game; increaseTurn: number must be >= 0");}
+
+        int index = mTurn.ordinal();
+        int nextIndex = index + num;
+        PlayerRoles[] roles = PlayerRoles.values();
+        nextIndex %= roles.length;
+        mTurn = roles[nextIndex];
+        return mTurn;
+    }
+
     public PlayerRoles getTurn() {
         return mTurn;
+    }
+
+    public void setRemainingGuesses(int num) {
+        mRemainingGuesses = num;
     }
 
     public int getRemainingGuesses() {
         return mRemainingGuesses;
     }
 
+    public void setWinner(TeamColor color) {
+        if (color == null) {throw new NullPointerException("Class Game; setWinner: color cannot be null");}
+
+        mWinner = color;
+    }
+
     public Optional<TeamColor> getWinner() {
         return (mWinner == null) ? Optional.empty() : Optional.of(mWinner);
+    }
+
+    public int getBoardSize() {
+        return mBoard.BOARD_SIZE;
     }
 
     private void initializeTeamsAndPlayers(Player[] players) throws IllegalArgumentException, NullPointerException {
