@@ -26,25 +26,15 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @MessageMapping("/game/{gameId}")
-    public void handleGameUpdate(@DestinationVariable String gameId, String update) {
-        // outdated endpoint but keeping for now
-        System.out.println("Received message from client for game " + gameId + ": " + update);
-        
-
-        String payload = "[" + getTimestamp() + "] " + update;
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
-    }
-
     @MessageMapping("/game/{gameId}/clue")
     public void handleProvideClue(@DestinationVariable String gameId, Clue clue) {
         System.out.println("Received clue for game " + gameId);
         System.out.println("Clue: " + clue.getClueText() + ", "+ clue.getClueNumber() + " Username: " + clue.getUsername());
 
         // Call GameService
+        Game modifiedGame = gameService.handleClue(gameId, clue);
         
-        Game payload = gameService.handleClue(clue);
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, modifiedGame);
     }
 
     @MessageMapping("/game/{gameId}/guess")
@@ -53,14 +43,9 @@ public class GameController {
         System.out.println("Guess: " + guess.getCardNumber() + " Username: " + guess.getUsername());
 
         // Call GameService
-
-
-        Game modifiedGame = gameService.handleGuess(guess);
-
-        // REVIEW(PIO): Don't understand why payload is not of Type Game, please extract relevant Data from game for payload (getTurn()?)
-
-        String payload = "Guess received";
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
+        Game modifiedGame = gameService.handleGuess(gameId, guess);
+        
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, modifiedGame);
     }
     
     @MessageMapping("/game/{gameId}/skipGuess")
@@ -69,16 +54,9 @@ public class GameController {
         System.out.println("username: " + username);
 
         // Call GameService
-        Game modifiedGame = gameService.handleSkip(username);
+        Game modifiedGame = gameService.handleSkip(gameId, username);
 
-        // REVIEW(PIO): Don't understand why payload is not of Type Game, please extract relevant Data from game for payload (getTurn()?)
-
-        
-        String payload = "Received skip from: " + username;
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, payload);
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, modifiedGame);
     }
 
-    private String getTimestamp() {
-        return new SimpleDateFormat("MM/dd/yyyy h:mm:ss a").format(new Date());
-    }
 }

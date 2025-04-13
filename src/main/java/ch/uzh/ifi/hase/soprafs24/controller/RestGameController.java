@@ -33,7 +33,7 @@ public class RestGameController {
         }
 
         // Fetch the game
-        Game retrievedGame = GameService.loadFromDatabase(gameId, username);
+        Game retrievedGame = GameService.retrieveGame(gameId, username);
         
         return retrievedGame;
     }

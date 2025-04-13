@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Clue;
 import ch.uzh.ifi.hase.soprafs24.classes.Guess;
+import ch.uzh.ifi.hase.soprafs24.classes.InMemoryStore;
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.classes.GameConfiguration;
@@ -18,6 +19,8 @@ import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
 import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.deserializer.CardAdapter;
+
+
 
 import java.util.Optional;
 
@@ -32,7 +35,8 @@ import com.deepl.api.*;
 @Transactional
 public class GameService {
     private static final GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Card.class, new CardAdapter());  
-    private static final Gson gson = builder.create(); 
+    private static final Gson gson = builder.create();
+    String connectionString = "mongodb+srv://<codenamesClient>:<codenamesClient>@codenamesdbcluser.dh3iiy8.mongodb.net/?appName=CodenamesDBCluser";
 
     public static Game createGame(GameConfiguration gameConfig) {
         System.out.println("Handling createGame request");
@@ -40,34 +44,39 @@ public class GameService {
         Game newGame = new Game(gameConfig);
         String json = gson.toJson(newGame);
 
-        if (1==1) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, json);
-        }
+        //if (1==1) {
+        //    throw new ResponseStatusException(HttpStatus.NOT_FOUND, json);
+        //}
 
         // String json = gson.toJson(newGame);
         // Store in database somehow
+        InMemoryStore.putGame(newGame.getGameID(), newGame);
 
         return newGame;
     }
 
-    private static Game loadFromDatabase(String gameID) {
+    private static Game loadFromDatabase(String gameId) {
 
-         // String json = {Insert MongoDB query}
-         // Game loadedGame = gson.fromJson(json, Game.class);
-        return createSampleGame(0);
+        // String json = {Insert MongoDB query}
+        // Game loadedGame = gson.fromJson(json, Game.class);
+
+        Game game = createSampleGame(0);
+        InMemoryStore.putGame(game.getGameID(), game);
+
+        return game;
     }
 
-    public static Game loadFromDatabase(String gameID, String username) {
-        // getGame logic
-        System.out.println("Handling getGame request");
-        // should we pass a UUID or is gameId fine? (question for the frontend)
-
-        // creating a new game as placeholder (usually we would use gameId here to retrieve the game from storage)
-        Game retrievedGame = loadFromDatabase(gameID);
+    public static Game retrieveGame(String gameId, String username) {
+        System.out.println("Handling getGame request for game: " + gameId); 
+        
+        Game retrievedGame = InMemoryStore.getGame(gameId);
+        if (retrievedGame == null) {
+            retrievedGame = loadFromDatabase(gameId);
+        }
 
         // verifying game existance
         if (retrievedGame == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameID);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
         }
 
         // verifying user is host
@@ -80,16 +89,21 @@ public class GameService {
     // this is the class that is the Game worker.
     // program the game logic here.
     // this is where the controller endpoints and internal game representation meets
-    public Game handleClue(Clue clue) {
-        // handleClue logic
+    public Game handleClue(String gameId, Clue clue) {
         System.out.println("Handling clue");
 
         String username = clue.getUsername(); 
         String clueMessage = clue.getClueText();
         int guesses = clue.getClueNumber().intValue();
-
-        // creating a new game as placeholder
-        Game currentGame = createSampleGame(0);
+        
+        // retrieving the game from the InMemoryStore or database
+        Game currentGame = InMemoryStore.getGame(gameId);
+        if (currentGame == null) {
+            currentGame = loadFromDatabase(gameId);
+        }
+        if (currentGame == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
+        }
 
         verifyAction(currentGame, username);
 
@@ -129,19 +143,26 @@ public class GameService {
         currentGame.logTurn(logMessage);
 
         // TODO: Update Database with info
+        InMemoryStore.putGame(currentGame.getGameID(), currentGame);
         
         return currentGame;
     }
 
-    public Game handleGuess(Guess guess) {
+    public Game handleGuess(String gameId, Guess guess) {
         // handleClue logic
         System.out.println("Handling guess");
 
         String username = guess.getUsername(); 
         int cardIndex = guess.getCardNumber();
 
-        // creating a new game as placeholder
-        Game currentGame = createSampleGame(1);
+        // retrieving the game from the InMemoryStore or database
+        Game currentGame = InMemoryStore.getGame(gameId);
+        if (currentGame == null) {
+            currentGame = loadFromDatabase(gameId);
+        }
+        if (currentGame == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
+        }
 
         verifyAction(currentGame, username);
 
@@ -238,16 +259,23 @@ public class GameService {
         currentGame.logTurn(logMessage);
 
         // TODO: Update Database with info
+        InMemoryStore.putGame(currentGame.getGameID(), currentGame);
         
         return currentGame;
     }
 
-    public Game handleSkip(String username) {
+    public Game handleSkip(String gameId, String username) {
         // handle Skip logic
         System.out.println("Handling skip Turn");
 
-        // creating a new game as placeholder
-        Game currentGame = createSampleGame(1);
+        // retrieving the game from the InMemoryStore or database
+        Game currentGame = InMemoryStore.getGame(gameId);
+        if (currentGame == null) {
+            currentGame = loadFromDatabase(gameId);
+        }
+        if (currentGame == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
+        }
 
         verifyAction(currentGame, username);
 
@@ -263,6 +291,7 @@ public class GameService {
         currentGame.logTurn(logMessage);
 
         // TODO: Update Database with info
+        InMemoryStore.putGame(currentGame.getGameID(), currentGame);
         
         return currentGame;
     }
@@ -283,7 +312,7 @@ public class GameService {
         }
     }
 
-
+    
     // helper function for creating the API during development (will be removed later)
     public static Game createSampleGame(int num) {
         Player p1 = new Player("Alice", PlayerRoles.BLUE_SPYMASTER);

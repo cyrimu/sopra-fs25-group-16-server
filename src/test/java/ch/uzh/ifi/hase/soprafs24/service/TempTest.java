@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs24.controller;
+package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Clue;
@@ -36,7 +36,7 @@ public class TempTest {
     @Test
     public void handleValidClue() {
         Clue clue = new Clue("Fish", 2, "Alice");
-        Game modifiedGame = gameService.handleClue(clue);
+        Game modifiedGame = gameService.handleClue("1", clue);
 
         assertEquals(modifiedGame.getTurn(), PlayerRoles.BLUE_OPERATIVE);
         assertEquals(modifiedGame.getRemainingGuesses(), 3);
@@ -47,7 +47,7 @@ public class TempTest {
     @Test
     public void handleInvalidClueWordOnBoard() {
         Clue clue = new Clue("ace", 2, "Alice");
-        Game modifiedGame = gameService.handleClue(clue);
+        Game modifiedGame = gameService.handleClue("1",clue);
 
         assertEquals(modifiedGame.getTurn(), PlayerRoles.RED_SPYMASTER);
         assertEquals(modifiedGame.getRemainingGuesses(), 0);
@@ -61,7 +61,7 @@ public class TempTest {
             ResponseStatusException.class, 
             () -> {
             Clue clue = new Clue("Fish", 2, "Beta");
-            Game modifiedGame = gameService.handleClue(clue);
+            Game modifiedGame = gameService.handleClue("1",clue);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -78,7 +78,7 @@ public class TempTest {
             ResponseStatusException.class, 
             () -> {
             Clue clue = new Clue("Fish", 2, "Carol");
-            Game modifiedGame = gameService.handleClue(clue);
+            Game modifiedGame = gameService.handleClue("1",clue);
             },
             "Expected previous Instruction to throw, but it did not."
             );
