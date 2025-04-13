@@ -11,7 +11,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
 import ch.uzh.ifi.hase.soprafs24.classes.DeepLTranslator;
-
+import ch.uzh.ifi.hase.soprafs24.classes.InMemoryStore;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +32,20 @@ import java.util.UUID;
 public class TempTest {
     @InjectMocks
     private GameService gameService = new GameService();
+
+    private Game testGame;
+
+    @BeforeEach
+    public void setup() {
+        Player p1 = new Player("Alice", PlayerRoles.BLUE_SPYMASTER);
+        Player p2 = new Player("Bob", PlayerRoles.BLUE_OPERATIVE);
+        Player p3 = new Player("Carol", PlayerRoles.RED_SPYMASTER);
+        Player p4 = new Player("David", PlayerRoles.RED_OPERATIVE);
+        Player[] players = new Player[] { p1, p2, p3, p4 };
+        testGame = new Game("Alice", players, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testGame = GameService.createSampleGame(0);
+        InMemoryStore.putGame("1", testGame);
+    }
 
     @Test
     public void handleValidClue() {
