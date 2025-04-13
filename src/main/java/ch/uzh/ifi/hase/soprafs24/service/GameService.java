@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import org.bson.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ch.uzh.ifi.hase.soprafs24.classes.Clue;
 import ch.uzh.ifi.hase.soprafs24.classes.Guess;
 import ch.uzh.ifi.hase.soprafs24.classes.InMemoryStore;
+import ch.uzh.ifi.hase.soprafs24.classes.MongoDB;
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.classes.GameConfiguration;
@@ -26,7 +28,9 @@ import java.util.Optional;
 
 import com.google.gson.Gson; 
 import com.google.gson.GsonBuilder; 
-import com.google.gson.TypeAdapter; 
+import com.google.gson.TypeAdapter;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.google.gson.Gson;
 
 import com.deepl.api.*;
@@ -36,20 +40,21 @@ import com.deepl.api.*;
 public class GameService {
     private static final GsonBuilder builder = new GsonBuilder().registerTypeAdapter(Card.class, new CardAdapter());  
     private static final Gson gson = builder.create();
-    String connectionString = "mongodb+srv://<codenamesClient>:<codenamesClient>@codenamesdbcluser.dh3iiy8.mongodb.net/?appName=CodenamesDBCluser";
+    private static MongoDB mongoDB = new MongoDB();
+    private static MongoDatabase database = mongoDB.getDatabase();
+    private static MongoCollection<Document> gamesCollection = database.getCollection("games"); 
+
 
     public static Game createGame(GameConfiguration gameConfig) {
         System.out.println("Handling createGame request");
         
+        // create a new game with the given configuration
         Game newGame = new Game(gameConfig);
         String json = gson.toJson(newGame);
 
-        //if (1==1) {
-        //    throw new ResponseStatusException(HttpStatus.NOT_FOUND, json);
-        //}
-
-        // String json = gson.toJson(newGame);
-        // Store in database somehow
+        // storing the game in the InMemoryStore & database
+        Document gameDocument = Document.parse(json);
+        gamesCollection.insertOne(gameDocument);
         InMemoryStore.putGame(newGame.getGameID(), newGame);
 
         return newGame;
@@ -57,13 +62,16 @@ public class GameService {
 
     private static Game loadFromDatabase(String gameId) {
 
-        // String json = {Insert MongoDB query}
-        // Game loadedGame = gson.fromJson(json, Game.class);
+        // retrieve the game from the database using the gameId
+        Document query = new Document("mGameID", gameId); 
+        Document gameDocument = gamesCollection.find(query).first(); 
+        String gameJson = gameDocument.toJson();
+        
+        // convert the JSON string back to a Game object
+        Game loadedGame = gson.fromJson(gameJson, Game.class);
+        InMemoryStore.putGame(loadedGame.getGameID(), loadedGame);
 
-        Game game = createSampleGame(0);
-        InMemoryStore.putGame(game.getGameID(), game);
-
-        return game;
+        return loadedGame;
     }
 
     public static Game retrieveGame(String gameId, String username) {
