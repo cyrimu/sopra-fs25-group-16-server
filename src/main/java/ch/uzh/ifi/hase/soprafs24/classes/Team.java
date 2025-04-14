@@ -27,15 +27,6 @@ public class Team {
         this(checkIfIsNull(that), (that.getSpymaster().isPresent()) ? that.getSpymaster().get() : null, (that.getOperative().isPresent()) ? that.getOperative().get() : null);
     }
 
-    // ATTENTION: this method is potentially unsafe and array might contain null!!!!
-    // Therefore manual verification must be handled by caller!
-    // Cannot figure out how to create non generic array with Optionals.
-    public String[] getMembers() {
-        String spymaster = (getSpymaster().isPresent()) ? getSpymaster().get(): null;
-        String operative = (getOperative().isPresent()) ? getOperative().get(): null;
-        return new String[] {spymaster, operative};
-    }
-
     public TeamColor getColor() {
         return mColor;
     }

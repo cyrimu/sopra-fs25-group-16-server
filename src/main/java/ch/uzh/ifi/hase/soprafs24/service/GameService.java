@@ -53,7 +53,6 @@ public class GameService {
         Game newGame = new Game(gameConfig);
         saveGame(newGame);
         InMemoryStore.putGame(newGame.getGameID(), newGame);
-
         return newGame;
     }
 

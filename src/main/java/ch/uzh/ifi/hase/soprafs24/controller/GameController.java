@@ -6,6 +6,7 @@ import ch.uzh.ifi.hase.soprafs24.classes.Clue;
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.Guess;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.GameDTO;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import java.text.SimpleDateFormat;
@@ -34,7 +35,7 @@ public class GameController {
         // Call GameService
         Game modifiedGame = gameService.handleClue(gameId, clue);
         
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, modifiedGame);
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, new GameDTO(modifiedGame));
     }
 
     @MessageMapping("/game/{gameId}/guess")
@@ -45,7 +46,7 @@ public class GameController {
         // Call GameService
         Game modifiedGame = gameService.handleGuess(gameId, guess);
         
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, modifiedGame);
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, new GameDTO(modifiedGame));
     }
     
     @MessageMapping("/game/{gameId}/skipGuess")
@@ -56,7 +57,7 @@ public class GameController {
         // Call GameService
         Game modifiedGame = gameService.handleSkip(gameId, username);
 
-        messagingTemplate.convertAndSend("/topic/game/" + gameId, modifiedGame);
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, new GameDTO(modifiedGame));
     }
 
 }

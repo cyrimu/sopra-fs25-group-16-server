@@ -156,6 +156,14 @@ public class Game {
         return mLanguage;
     }
 
+    public Team getBlueTeam() {
+        return new Team(mBlueTeam);
+    }
+
+    public Team getRedTeam() {
+        return new Team(mRedTeam);
+    }
+
     public TeamColor getFirstTeam() {
         return mFirstTeam;
     }

@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.GameDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,11 @@ import java.util.UUID;
 @RestController
 public class RestGameController {
     GameService gameService = new GameService();
+
     @GetMapping("/game/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Game getGame(@PathVariable String gameId, String username) {
+    public GameDTO getGame(@PathVariable String gameId, String username) {
         
         // username check
         if (username == null || username.trim().isEmpty()) {
@@ -34,14 +36,14 @@ public class RestGameController {
 
         // Fetch the game
         Game retrievedGame = gameService.retrieveGame(gameId, username);
-        
-        return retrievedGame;
+        GameDTO gameDTO = new GameDTO(retrievedGame);
+        return gameDTO;
     }
 
     @PostMapping("/game")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public Game createGame(@RequestBody GameConfigurationDTO gameConfigurationDTO, String username) {
+    public GameDTO createGame(@RequestBody GameConfigurationDTO gameConfigurationDTO, @RequestParam String username) {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
@@ -51,7 +53,8 @@ public class RestGameController {
         GameConfiguration gameConfig = convertGameConfigurationDTOtoGameConfiguration(gameConfigurationDTO);
 
         Game createdGame = gameService.createGame(gameConfig);
-        return createdGame;
+        GameDTO gameDTO = new GameDTO(createdGame);
+        return gameDTO;
     }
 
     // we use a custom conversion function because the normal DTO mapper is not equipped for this kind of objects
