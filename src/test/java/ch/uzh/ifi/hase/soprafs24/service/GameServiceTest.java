@@ -522,14 +522,6 @@ public class GameServiceTest {
             }
         }
 
-        generatedCards = testGame.getCards();
-        String counter = "";
-        for (int i = 0; i < generatedCards.length; i++) {
-            if (generatedCards[i].getColor() == CardColor.BLUE) {
-                counter += "\n" + (String) generatedCards[i].getContent() + " | " + String.valueOf(generatedCards[i].getIsRevealed());
-            }
-        }
-
         InMemoryStore.putGame(testGame.getGameID(), testGame);
 
         int guessIndex = 0;
@@ -781,6 +773,42 @@ public class GameServiceTest {
     // Handle Skip Guess
 
     @Test
+    public void handleSkipGuessValidBlueOperativeSkip() {
+        testGame.increaseTurn(1);
+        testGame.setRemainingGuesses(2);
+        InMemoryStore.putGame(testGame.getGameID(), testGame);
+
+        Game guessResult = gameService.handleSkip(testGame.getGameID(), "B");
+
+        String expectedMessage = String.format("%s skipped the turn", "B");
+
+        InMemoryStore.removeGame(testGame.getGameID());
+
+        assertEquals(guessResult.getTurn(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(guessResult.getRemainingGuesses(), 0);
+        String actualMessage = guessResult.getLog()[0];
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void handleSkipGuessValidRedOperativeSkip() {
+        testGame.increaseTurn(3);
+        testGame.setRemainingGuesses(2);
+        InMemoryStore.putGame(testGame.getGameID(), testGame);
+
+        Game guessResult = gameService.handleSkip(testGame.getGameID(), "D");
+
+        String expectedMessage = String.format("%s skipped the turn", "D");
+
+        InMemoryStore.removeGame(testGame.getGameID());
+
+        assertEquals(guessResult.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(guessResult.getRemainingGuesses(), 0);
+        String actualMessage = guessResult.getLog()[0];
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
     public void handleSkipGuessInvalidWinnerAlreadyPresent() {
         testGame.setWinner(TeamColor.BLUE);
         testGame.increaseTurn(1);
@@ -833,6 +861,24 @@ public class GameServiceTest {
             );
 
         String expectedMessage = "It is not yet the given users turn";
+        String actualMessage = exception.getMessage();
+
+        InMemoryStore.removeGame(testGame.getGameID());
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void handleSkipGuessInvalidSpymasterTurn() {
+        InMemoryStore.putGame(testGame.getGameID(), testGame);
+        Exception exception = assertThrows( 
+            ResponseStatusException.class, 
+            () -> {
+            Game guessResult = gameService.handleSkip(testGame.getGameID(), "A");
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Only Operatives can skip turns";
         String actualMessage = exception.getMessage();
 
         InMemoryStore.removeGame(testGame.getGameID());
