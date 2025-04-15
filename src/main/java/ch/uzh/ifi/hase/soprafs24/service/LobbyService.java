@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.bson.Document;
 import org.springframework.http.HttpStatus;
@@ -229,20 +230,20 @@ public class LobbyService {
 
     private Lobby retrieveLobby(String lobbyId, String username) {
 
-        Lobby lobby = InMemoryStore.getLobby(lobbyId);
-        if (lobby == null) {
+        Optional<Lobby> lobby = InMemoryStore.getLobby(lobbyId);
+        if (!lobby.isPresent()) {
             lobby = loadLobbyFromDatabase(lobbyId);
         }
 
-        if (lobby == null) {
+        if (!lobby.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Lobby not found with ID: " + lobbyId);
         }
 
-        return lobby;
+        return lobby.get();
     }
 
-    private Lobby loadLobbyFromDatabase(String lobbyId) {
+    private Optional<Lobby> loadLobbyFromDatabase(String lobbyId) {
         Document query = new Document("lobbyID", lobbyId);
         Document lobbyDocument = lobbiesCollection.find(query).first();
 
@@ -252,10 +253,10 @@ public class LobbyService {
 
             if (loadedLobby != null) {
                 InMemoryStore.putLobby(loadedLobby.getLobbyID(), loadedLobby);
-                return loadedLobby;
+                return Optional.of(loadedLobby);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     private static Lobby createSampleLobby() {

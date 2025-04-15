@@ -22,8 +22,6 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.deserializer.CardAdapter;
 
-
-
 import java.util.Optional;
 
 import com.google.gson.Gson; 
@@ -56,7 +54,7 @@ public class GameService {
         return newGame;
     }
 
-    private static Game loadFromDatabase(String gameId) {
+    private static Optional<Game> loadFromDatabase(String gameId) {
 
         // retrieve the game from the database using the gameId
         Document query = new Document("mGameID", gameId); 
@@ -66,24 +64,26 @@ public class GameService {
             // convert the JSON string back to a Game object
             Game loadedGame = gson.fromJson(gameJson, Game.class);
             InMemoryStore.putGame(loadedGame.getGameID(), loadedGame);
-            return loadedGame;
+            return Optional.of(loadedGame);
         } else {
-            return null; // Game not found in the database
+            return Optional.empty(); // Game not found in the database
         }
     }
 
     public Game retrieveGame(String gameId, String username) {
         System.out.println("Handling getGame request for game: " + gameId); 
         
-        Game retrievedGame = InMemoryStore.getGame(gameId);
-        if (retrievedGame == null) {
-            retrievedGame = loadFromDatabase(gameId);
+        Optional<Game> storedGame = InMemoryStore.getGame(gameId);
+        if (!storedGame.isPresent()) {
+            storedGame = loadFromDatabase(gameId);
         }
 
         // verifying game existance
-        if (retrievedGame == null) {
+        if (!storedGame.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
         }
+
+        Game retrievedGame = storedGame.get();
 
         // verifying user is host
         if (!retrievedGame.getHost().equals(username)) {
@@ -92,9 +92,6 @@ public class GameService {
         return retrievedGame;
     }
 
-    // this is the class that is the Game worker.
-    // program the game logic here.
-    // this is where the controller endpoints and internal game representation meets
     public Game handleClue(String gameId, Clue clue) {
         System.out.println("Handling clue");
 
@@ -103,13 +100,11 @@ public class GameService {
         int guesses = clue.getClueNumber().intValue();
         
         // retrieving the game from the InMemoryStore or database
-        Game currentGame = InMemoryStore.getGame(gameId);
-        if (currentGame == null) {
-            currentGame = loadFromDatabase(gameId);
-        }
-        if (currentGame == null) {
+        Optional<Game> gameExists = InMemoryStore.getGame(gameId);
+        if (!gameExists.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
         }
+        Game currentGame = gameExists.get();
 
         verifyAction(currentGame, username);
 
@@ -125,6 +120,7 @@ public class GameService {
         
         Card[] cards = currentGame.getCards();
         boolean isValidClue = true;
+        String logMessage = "";
 
         // Verification that clue Message not a Word on Board -
         for (Card card : cards) {
@@ -134,6 +130,7 @@ public class GameService {
                     // Probably we should notify user somehow that illegal word was used
                     currentGame.increaseTurn(2);
                     currentGame.setRemainingGuesses(0);
+                    logMessage = String.format("%s provided the INVALID Clue: %s : %d", username, clueMessage, guesses);
                     isValidClue = false;
                 }
             }
@@ -143,9 +140,9 @@ public class GameService {
         if (isValidClue){
             currentGame.increaseTurn(1);
             currentGame.setRemainingGuesses(guesses+1);
+            logMessage = String.format("%s provided the Clue: %s : %d", username, clueMessage, guesses);
         }
 
-        String logMessage = String.format("%s provided the Clue: %s : %d", username, clueMessage, guesses);
         currentGame.logTurn(logMessage);
 
         
@@ -163,13 +160,11 @@ public class GameService {
         int cardIndex = guess.getCardNumber();
 
         // retrieving the game from the InMemoryStore or database
-        Game currentGame = InMemoryStore.getGame(gameId);
-        if (currentGame == null) {
-            currentGame = loadFromDatabase(gameId);
-        }
-        if (currentGame == null) {
+        Optional<Game> gameExists = InMemoryStore.getGame(gameId);
+        if (!gameExists.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
         }
+        Game currentGame = gameExists.get();
 
         verifyAction(currentGame, username);
 
@@ -186,6 +181,10 @@ public class GameService {
         
         Card[] cards = currentGame.getCards();
         Card guessedCard = cards[cardIndex];
+
+        if (guessedCard.getIsRevealed()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This card has already been revealed!");
+        }
 
         currentGame.revealCard(cardIndex);
 
@@ -234,6 +233,7 @@ public class GameService {
         // Check if either Player has won
         int countUnrevealedRedCards = 0;
         int countUnrevealedBlueCards = 0;
+        cards = currentGame.getCards();
         for (Card card : cards) {
             if (card.getColor() == CardColor.RED) {
                 if (card.getIsRevealed() == false) {
@@ -248,19 +248,12 @@ public class GameService {
         }
         if (countUnrevealedRedCards == 0) {currentGame.setWinner(TeamColor.RED);}
         else if (countUnrevealedBlueCards == 0) {currentGame.setWinner(TeamColor.BLUE);}
-
+        
         //Log Turn
         String guessMessage = "";
         if (guessedCard.getType() == GameType.TEXT){
             guessMessage = (String) guessedCard.getContent();
         }
-
-        //Was used for debugging will be deleted later when proper tests can be written
-        // String debug = String.format("Role:%s | Color:%s | Bool:%s | Winner:%s | Turn:%s | Guesses:%s", playerRole.get(), guessedCard.getColor(), currentGame.getCards()[cardIndex].getIsRevealed(), currentGame.getWinner().isPresent(), currentGame.getTurn(), currentGame.getRemainingGuesses());
-
-        // if (1==1) {
-        //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, debug);
-        // }
 
         String logMessage = String.format("%s made the guess: %s", username, guessMessage);
         currentGame.logTurn(logMessage);
@@ -277,13 +270,11 @@ public class GameService {
         System.out.println("Handling skip Turn");
 
         // retrieving the game from the InMemoryStore or database
-        Game currentGame = InMemoryStore.getGame(gameId);
-        if (currentGame == null) {
-            currentGame = loadFromDatabase(gameId);
-        }
-        if (currentGame == null) {
+        Optional<Game> gameExists = InMemoryStore.getGame(gameId);
+        if (!gameExists.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with ID: " + gameId);
         }
+        Game currentGame = gameExists.get();
 
         verifyAction(currentGame, username);
 
