@@ -29,7 +29,14 @@ public class Application {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
+        registry
+                .addMapping("/**")
+                .allowedOrigins(
+                        "http://localhost:3000",
+                        "https://sopra-fs25-group-16-server.oa.r.appspot.com"
+                )
+                .allowedMethods("*")
+                .allowCredentials(true);
       }
     };
   }
