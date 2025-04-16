@@ -83,4 +83,8 @@ public class GameDTO {
     public String[] getLog() {
         return mLog;
     }
+
+    public Card[] getCards() {
+        return mCards;
+    }
 }
