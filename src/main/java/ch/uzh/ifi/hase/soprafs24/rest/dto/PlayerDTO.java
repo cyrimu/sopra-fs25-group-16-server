@@ -10,6 +10,11 @@ public class PlayerDTO {
     
     // Default constructor
     public PlayerDTO() {}
+
+    // Constructor with playerName
+    public PlayerDTO(String playerName) {
+        this.playerName = playerName;
+    }
     
     // Getters and setters
     public String getPlayerName() { return playerName; }
