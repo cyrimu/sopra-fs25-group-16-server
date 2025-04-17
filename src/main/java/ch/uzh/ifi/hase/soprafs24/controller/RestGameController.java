@@ -12,6 +12,8 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,7 +24,13 @@ import java.util.UUID;
 
 @RestController
 public class RestGameController {
-    GameService gameService = new GameService();
+
+    private final GameService gameService;
+
+    @Autowired
+    public RestGameController(GameService gameService) {
+        this.gameService = gameService;
+    }
 
     @GetMapping("/game/{gameId}")
     @ResponseStatus(HttpStatus.OK)
