@@ -172,8 +172,7 @@ public class RestGameControllerTest {
         verify(gameService).createGame(captor.capture());
         GameConfiguration capturedConfig = captor.getValue();
 
-        // Assert properties of the captured GameConfiguration based on the DTO and controller logic
-        // Note: We don't check the ID as it's randomly generated in the controller
+
         assertEquals(testGameConfigurationDTO.getHost(), capturedConfig.getHost());
         assertEquals(testGameConfigurationDTO.getPlayers().length, capturedConfig.getPlayers().length);
         // Check player names within the captured config
