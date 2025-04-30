@@ -2,4 +2,5 @@
 Dockerfile
 .git
 .gitignore
+local.properties
 config.java

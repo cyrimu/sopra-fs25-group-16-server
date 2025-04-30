@@ -17,7 +17,6 @@ import java.lang.IllegalArgumentException;
 import java.lang.NullPointerException;
 import java.lang.RuntimeException;
 
-
 public class Game {
     public static final int ID_LENGTH = 8;
     public static final int MAX_NUM_PLAYERS = 4;

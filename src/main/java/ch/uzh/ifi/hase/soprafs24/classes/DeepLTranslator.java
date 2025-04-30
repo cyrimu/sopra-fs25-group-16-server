@@ -1,20 +1,17 @@
 package ch.uzh.ifi.hase.soprafs24.classes;
 
+import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
+import ch.uzh.ifi.hase.soprafs24.classes.StaticPropertyConfiguration;
+
 import java.util.EnumMap;
 import java.util.Map;
 import java.lang.RuntimeException;
-import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import com.deepl.api.*;
 
-import org.springframework.beans.factory.annotation.Value;
-
-
 public class DeepLTranslator {
- //   @Value("${DEEPL_API_KEY}") // deepl.key
- //   private static String DEEPL_API_KEY;
+    private static String authKey = "607f0b29-2e43-4455-adf8-938d1842bbcf:fx";
+    private static Translator translator =  new Translator(authKey);
 
-    private static final String authKey = "607f0b29-2e43-4455-adf8-938d1842bbcf:fx";
-    private static final Translator translator = new Translator(authKey);
     private static final EnumMap<SupportedLanguages, String> languageMap = new EnumMap<>(Map.ofEntries(
         Map.entry(SupportedLanguages.ARABIC, "AR"),
         Map.entry(SupportedLanguages.BULGARIAN, "BG"),
@@ -47,7 +44,6 @@ public class DeepLTranslator {
         Map.entry(SupportedLanguages.UKRAINIAN, "UK"),
         Map.entry(SupportedLanguages.CHINESE, "ZH")
     ));
-
 
     public static String translateWord(String word, SupportedLanguages language) {
         String translatedWord = "";
