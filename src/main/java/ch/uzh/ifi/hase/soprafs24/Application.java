@@ -33,7 +33,8 @@ public class Application {
                 .addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
-                        "https://sopra-fs25-group-16-server.oa.r.appspot.com"
+                        "https://sopra-fs25-group-16-server.oa.r.appspot.com",
+                        "https://sopra-fs25-group-16-client.vercel.app/"
                 )
                 .allowedMethods("*")
                 .allowCredentials(true);
