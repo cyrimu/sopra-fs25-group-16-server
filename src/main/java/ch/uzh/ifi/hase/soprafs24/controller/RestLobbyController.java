@@ -12,6 +12,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+
 
 @RestController
 public class RestLobbyController {
@@ -66,7 +68,7 @@ public class RestLobbyController {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
-        
+
         // Ensure the path ID matches the lobby ID in the DTO
         if (!lobbyId.equals(lobbyDTO.getLobbyID())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
@@ -83,7 +85,9 @@ public class RestLobbyController {
         
         // Update lobby using the lobby service
         Lobby updatedLobby = lobbyService.updateLobby(lobbyId, lobby, username);
-        
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, new LobbyDTO(updatedLobby));
+
         return updatedLobby;
     }
 
@@ -122,6 +126,21 @@ public class RestLobbyController {
         messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, new LobbyDTO(updatedLobby));
 
         return updatedLobby;
+    }
+
+    @DeleteMapping("/lobby/{lobbyId}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLobby(@PathVariable String lobbyId, @RequestParam String username) {
+        // Username check
+        if (username == null || username.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
+        }
+
+        System.out.println("User " + username + " is deleting the lobby: " + lobbyId);
+
+        lobbyService.deleteLobby(lobbyId, username);
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, Map.of("type", "delete"));
     }
 
     // For now we use this to construct a new lobby onject which will be used as an update injection for the lobby
