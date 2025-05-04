@@ -3,32 +3,30 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 import ch.uzh.ifi.hase.soprafs24.classes.Game;
 import ch.uzh.ifi.hase.soprafs24.classes.GameConfiguration;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
-import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.PlayerRoles;
-import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
-import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameConfigurationDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.GameDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.GameService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class RestGameController {
 
     private final GameService gameService;
 
+    private final SimpMessagingTemplate messagingTemplate;
+
     @Autowired
-    public RestGameController(GameService gameService) {
+    public RestGameController(SimpMessagingTemplate messagingTemplate, GameService gameService) {
+        this.messagingTemplate = messagingTemplate;
         this.gameService = gameService;
     }
 
@@ -48,10 +46,10 @@ public class RestGameController {
         return gameDTO;
     }
 
-    @PostMapping("/game")
+    @PostMapping("/game/{lobbyId}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameDTO createGame(@RequestBody GameConfigurationDTO gameConfigurationDTO, @RequestParam String username) {
+    public GameDTO createGame(@RequestBody GameConfigurationDTO gameConfigurationDTO, @PathVariable String lobbyId, @RequestParam String username) {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
@@ -62,6 +60,15 @@ public class RestGameController {
 
         Game createdGame = gameService.createGame(gameConfig);
         GameDTO gameDTO = new GameDTO(createdGame);
+
+        // Send updated ready list to all clients in the lobby
+        Map<String, Object> message = new HashMap<>();
+        message.put("type", "game");
+        message.put("gameId", gameDTO.getGameID());
+        message.put("username", username);
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, message);
+
         return gameDTO;
     }
 
