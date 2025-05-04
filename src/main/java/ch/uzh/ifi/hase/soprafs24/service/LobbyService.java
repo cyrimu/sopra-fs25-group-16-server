@@ -164,6 +164,17 @@ public class LobbyService {
         lobbiesCollection.replaceOne(filter, lobbyDocument, options);
     }
 
+    private void deleteLobbyWithId(String lobbyId) {
+        // Remove from in-memory store
+        InMemoryStore.removeLobby(lobbyId);
+
+        // Remove from MongoDB
+        Document filter = new Document("mlobbyID", lobbyId); // Ensure this matches your save filter
+        lobbiesCollection.deleteOne(filter);
+
+        System.out.println("Lobby " + lobbyId + " deleted.");
+    }
+
     public Lobby joinLobby(String lobbyId, String username) {
         System.out.println("Handling joinLobby request for lobby: " + lobbyId + " by user: " + username);
 
@@ -226,6 +237,20 @@ public class LobbyService {
         saveLobby(lobby);
 
         return lobby;
+    }
+
+    public void deleteLobby(String lobbyId, String username) {
+        System.out.println("Handling deleteLobby request for lobby: " + lobbyId + " by user: " + username);
+
+        Lobby lobby = retrieveLobby(lobbyId, username);
+
+        // check if the username is not the host
+        if (!Objects.equals(lobby.getHost(), username)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "Cannot delete the lobby if the user is not the host");
+        }
+
+        deleteLobbyWithId(lobby.getLobbyID());
     }
 
     private Lobby retrieveLobby(String lobbyId, String username) {
