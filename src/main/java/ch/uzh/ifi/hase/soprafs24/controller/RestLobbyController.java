@@ -2,11 +2,13 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Lobby;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyUpdateDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
 import ch.uzh.ifi.hase.soprafs24.service.LobbyService;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -15,8 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class RestLobbyController {
 
     private final LobbyService lobbyService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public RestLobbyController(LobbyService lobbyService) {
+
+    public RestLobbyController(SimpMessagingTemplate messagingTemplate, LobbyService lobbyService) {
+        this.messagingTemplate = messagingTemplate;
         this.lobbyService = lobbyService;
     }
 
@@ -90,12 +95,14 @@ public class RestLobbyController {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
-        
+
         System.out.println("User " + username + " is joining lobby: " + lobbyId);
-        
+
         // Call service method to handle joining logic
         Lobby updatedLobby = lobbyService.joinLobby(lobbyId, username);
-        
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, new LobbyDTO(updatedLobby));
+
         return updatedLobby;
     }
 
@@ -107,11 +114,13 @@ public class RestLobbyController {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
-        
+
         System.out.println("User " + username + " is leaving lobby: " + lobbyId);
-        
+
         Lobby updatedLobby = lobbyService.leaveLobby(lobbyId, username);
-        
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, new LobbyDTO(updatedLobby));
+
         return updatedLobby;
     }
 
