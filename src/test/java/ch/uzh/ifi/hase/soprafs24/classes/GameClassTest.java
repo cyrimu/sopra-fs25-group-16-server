@@ -40,7 +40,8 @@ public class GameClassTest {
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
 
     private GameConfiguration testConfiguration = new GameConfiguration();
-    private Game testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+    private Game testTextGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+    private Game testImageGame = new Game("A", testPlayers, GameType.IMAGE, SupportedLanguages.ENGLISH);
 
 
     @BeforeEach
@@ -66,114 +67,139 @@ public class GameClassTest {
         testConfiguration.setType(GameType.TEXT);
         testConfiguration.setLanguage(SupportedLanguages.ENGLISH);
 
-        testGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH),"A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testTextGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH),"A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testImageGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH),"A", testPlayers, GameType.IMAGE, SupportedLanguages.ENGLISH);
     }
 
     @Test
     public void gameAllParameterConstructorSucceds() {
-        assertNotNull(testGame.getGameID());
-        assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "A");
-        assertEquals(testGame.getGameType(), GameType.TEXT);
-        assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
-        assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRemainingGuesses(), 0);
-        assertTrue(!(testGame.getWinner().isPresent()));
-        assertEquals(testGame.getLog().length, 0);
-        assertEquals(testGame.getFirstTeam(), TeamColor.BLUE);
+        assertNotNull(testTextGame.getGameID());
+        assertEquals(testTextGame.getCards().length, 25);
+        assertEquals(testTextGame.getHost(), "A");
+        assertEquals(testTextGame.getGameType(), GameType.TEXT);
+        assertEquals(testTextGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testTextGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRemainingGuesses(), 0);
+        assertTrue(!(testTextGame.getWinner().isPresent()));
+        assertEquals(testTextGame.getLog().length, 0);
+        assertEquals(testTextGame.getFirstTeam(), TeamColor.BLUE);
 
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
 
-        assertEquals(testGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
-        assertEquals(testGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
-        assertEquals(testGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+    }
+
+    @Test
+    public void gameAllParameterImageConstructorSucceds() {
+        assertNotNull(testImageGame.getGameID());
+        assertEquals(testImageGame.getCards().length, 20);
+        assertEquals(testImageGame.getHost(), "A");
+        assertEquals(testImageGame.getGameType(), GameType.IMAGE);
+        assertEquals(testImageGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testImageGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testImageGame.getRemainingGuesses(), 0);
+        assertTrue(!(testImageGame.getWinner().isPresent()));
+        assertEquals(testImageGame.getLog().length, 0);
+        assertEquals(testImageGame.getFirstTeam(), TeamColor.BLUE);
+
+        assertEquals(testImageGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testImageGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testImageGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testImageGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+
+        assertEquals(testImageGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testImageGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testImageGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testImageGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
     }
 
     @Test
     public void gameNoIDConstructorSucceds() {
-        testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+        testTextGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
 
-        assertNotNull(testGame.getGameID());
-        assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "A");
-        assertEquals(testGame.getGameType(), GameType.TEXT);
-        assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
-        assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRemainingGuesses(), 0);
-        assertTrue(!(testGame.getWinner().isPresent()));
-        assertEquals(testGame.getLog().length, 0);
-        assertEquals(testGame.getFirstTeam(), TeamColor.BLUE);
+        assertNotNull(testTextGame.getGameID());
+        assertNotNull(testTextGame.getCards());
+        assertEquals(testTextGame.getHost(), "A");
+        assertEquals(testTextGame.getGameType(), GameType.TEXT);
+        assertEquals(testTextGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testTextGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRemainingGuesses(), 0);
+        assertTrue(!(testTextGame.getWinner().isPresent()));
+        assertEquals(testTextGame.getLog().length, 0);
+        assertEquals(testTextGame.getFirstTeam(), TeamColor.BLUE);
 
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
 
-        assertEquals(testGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
-        assertEquals(testGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
-        assertEquals(testGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
     }
 
     @Test
     public void gameGameConfigurationNoIDConstructorSucceds() {
-        testGame = new Game(testConfiguration);
+        testTextGame = new Game(testConfiguration);
 
-        assertNotNull(testGame.getGameID());
-        assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "A");
-        assertEquals(testGame.getGameType(), GameType.TEXT);
-        assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
-        assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRemainingGuesses(), 0);
-        assertTrue(!(testGame.getWinner().isPresent()));
-        assertEquals(testGame.getLog().length, 0);
-        assertEquals(testGame.getFirstTeam(), TeamColor.BLUE);
+        assertNotNull(testTextGame.getGameID());
+        assertNotNull(testTextGame.getCards());
+        assertEquals(testTextGame.getHost(), "A");
+        assertEquals(testTextGame.getGameType(), GameType.TEXT);
+        assertEquals(testTextGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testTextGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRemainingGuesses(), 0);
+        assertTrue(!(testTextGame.getWinner().isPresent()));
+        assertEquals(testTextGame.getLog().length, 0);
+        assertEquals(testTextGame.getFirstTeam(), TeamColor.BLUE);
 
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
 
-        assertEquals(testGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
-        assertEquals(testGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
-        assertEquals(testGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
     }
 
     @Test
     public void gameGameConfigurationWithIDConstructorSucceds() {
-        testGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH), testConfiguration);
+        testTextGame = new Game(UUID.randomUUID().toString().substring(0,Game.ID_LENGTH), testConfiguration);
 
-        assertNotNull(testGame.getGameID());
-        assertNotNull(testGame.getCards());
-        assertEquals(testGame.getHost(), "A");
-        assertEquals(testGame.getGameType(), GameType.TEXT);
-        assertEquals(testGame.getLanguage(), SupportedLanguages.ENGLISH);
-        assertEquals(testGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRemainingGuesses(), 0);
-        assertTrue(!(testGame.getWinner().isPresent()));
-        assertEquals(testGame.getLog().length, 0);
-        assertEquals(testGame.getFirstTeam(), TeamColor.BLUE);
+        assertNotNull(testTextGame.getGameID());
+        assertNotNull(testTextGame.getCards());
+        assertEquals(testTextGame.getHost(), "A");
+        assertEquals(testTextGame.getGameType(), GameType.TEXT);
+        assertEquals(testTextGame.getLanguage(), SupportedLanguages.ENGLISH);
+        assertEquals(testTextGame.getTurn(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRemainingGuesses(), 0);
+        assertTrue(!(testTextGame.getWinner().isPresent()));
+        assertEquals(testTextGame.getLog().length, 0);
+        assertEquals(testTextGame.getFirstTeam(), TeamColor.BLUE);
 
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
-        assertEquals(testGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_SPYMASTER).get(), "A");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.BLUE_OPERATIVE).get(), "B");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_SPYMASTER).get(), "C");
+        assertEquals(testTextGame.getNamebyRole(PlayerRoles.RED_OPERATIVE).get(), "D");
 
-        assertEquals(testGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
-        assertEquals(testGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
-        assertEquals(testGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
-        assertEquals(testGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("A").get(), PlayerRoles.BLUE_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("B").get(), PlayerRoles.BLUE_OPERATIVE);
+        assertEquals(testTextGame.getRolebyName("C").get(), PlayerRoles.RED_SPYMASTER);
+        assertEquals(testTextGame.getRolebyName("D").get(), PlayerRoles.RED_OPERATIVE);
     }
 
     @Test
     public void gameConstructorDeepCopiesParameters() {
-        Player[] storedPlayers = testGame.getPlayers();
+        Player[] storedPlayers = testTextGame.getPlayers();
         assertNotSame(storedPlayers, testPlayers);
 
         for (int i = 0; i < testPlayers.length; i++) {
@@ -189,7 +215,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(null, "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testTextGame = new Game(null, "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -205,7 +231,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), null, testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testTextGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), null, testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -221,7 +247,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", testPlayers, null, SupportedLanguages.ENGLISH);
+            Game testTextGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", testPlayers, null, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -237,7 +263,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", testPlayers, GameType.TEXT, null);
+            Game testTextGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", testPlayers, GameType.TEXT, null);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -253,7 +279,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            Game testGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", null, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testTextGame = new Game(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH), "A", null, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -268,7 +294,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Game testGame = new Game("aaaaaaaaaa", "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testTextGame = new Game("aaaaaaaaaa", "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -284,7 +310,7 @@ public class GameClassTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            Game testGame = new Game("a", "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            Game testTextGame = new Game("a", "A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -305,7 +331,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testTextGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -326,7 +352,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testTextGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -346,7 +372,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testTextGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -367,7 +393,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testTextGame = new Game("A", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -388,7 +414,7 @@ public class GameClassTest {
                                         new Player("C", PlayerRoles.RED_SPYMASTER), 
                                         new Player("D", PlayerRoles.RED_OPERATIVE)};
                                         
-            testGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
+            testTextGame = new Game("Me", testPlayers, GameType.TEXT, SupportedLanguages.ENGLISH);
             },
             "Expected previous Instruction to throw, but it did not."
             );

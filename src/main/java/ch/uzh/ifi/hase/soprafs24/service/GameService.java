@@ -255,6 +255,10 @@ public class GameService {
             guessMessage = (String) guessedCard.getContent();
         }
 
+        else if (guessedCard.getType() == GameType.IMAGE){
+            guessMessage = String.format("Picked the %d card in row %d", (cardIndex % 4) + 1, cardIndex / 4);
+        }
+
         String logMessage = String.format("%s made the guess: %s", username, guessMessage);
         currentGame.logTurn(logMessage);
 

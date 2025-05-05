@@ -25,7 +25,7 @@ public class Board {
     public final int NUM_CARDS_WHITE;
 
     private static final String[] WORDS = {"ace","act","age","aid","cab","can","cap","car","cat","cog","ear","eel","egg","elf","elk","gap","gas","ice","ink","key","bow","box","bus","day","dog","eye"};
-    private static final String[] PICTURES = {"a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"};
+    private static final String[] PICTURES = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
     private static final CardFactory creator =  new CardFactory();
     private HashSet<Integer> usedIndexes;
