@@ -5,7 +5,10 @@ import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyUpdateDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
+import ch.uzh.ifi.hase.soprafs24.service.ImageService;
 import ch.uzh.ifi.hase.soprafs24.service.LobbyService;
+
+import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,11 +23,13 @@ public class RestLobbyController {
 
     private final LobbyService lobbyService;
     private final SimpMessagingTemplate messagingTemplate;
+    private ImageService imageService; // dont touch this
 
 
     public RestLobbyController(SimpMessagingTemplate messagingTemplate, LobbyService lobbyService) {
         this.messagingTemplate = messagingTemplate;
         this.lobbyService = lobbyService;
+        this.imageService = new ImageService();
     }
 
     @PostMapping("/lobby")
@@ -141,6 +146,15 @@ public class RestLobbyController {
         lobbyService.deleteLobby(lobbyId, username);
 
         messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, Map.of("type", "delete"));
+    }
+
+    @GetMapping("/image/generate")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String generateImage(@RequestParam String prompt, @RequestParam(defaultValue = "512x512") String size) {
+        System.out.println("Generating image with prompt: " + prompt);
+        String dataUri = imageService.generateBase64(prompt, size);
+        return dataUri;
     }
 
     // For now we use this to construct a new lobby onject which will be used as an update injection for the lobby

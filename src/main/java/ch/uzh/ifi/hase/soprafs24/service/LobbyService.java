@@ -58,6 +58,14 @@ public class LobbyService {
     public Lobby createLobby(String username) {
         System.out.println("Creating lobby for user: " + username);
 
+        if (username == null) {
+            throw new NullPointerException("Username cannot be null when creating a lobby.");
+        }
+        if (username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty when creating a lobby.");
+        }
+        
+
         Player hostPlayer = new Player(username, PlayerRoles.BLUE_SPYMASTER);
         Player[] players = new Player[] { hostPlayer, null, null, null };
         Lobby newLobby = new Lobby(
@@ -197,7 +205,7 @@ public class LobbyService {
 
         boolean added = lobby.addPlayer(newPlayer);
         if (!added) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Cannot join lobby because it is already full");
         }
 
@@ -230,7 +238,7 @@ public class LobbyService {
         }
 
         if (!removed) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Player not found in lobby.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Player not found in lobby.");
         }
 
 

@@ -37,6 +37,11 @@ public class InMemoryStore {
     public static void removeGame(String gameId) {
         gameMap.remove(gameId);
     }
+
+    public static void clear() {
+        lobbyMap.clear();
+        gameMap.clear();
+    }
     
     // Debugging getter; REMOVE WHEN BUILD IS STABLE
     public static Map<String, Game> getMap() {
