@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 @WebMvcTest(RestLobbyController.class)
 public class RestLobbyControllerTest {
@@ -44,6 +45,9 @@ public class RestLobbyControllerTest {
 
     @MockBean
     private LobbyService lobbyService;
+
+    @MockBean
+    private SimpMessagingTemplate messagingTemplate;
 
     private Lobby testLobby;
     private Player[] testPlayers;

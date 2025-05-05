@@ -2,22 +2,34 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Lobby;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyUpdateDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
+import ch.uzh.ifi.hase.soprafs24.service.ImageService;
 import ch.uzh.ifi.hase.soprafs24.service.LobbyService;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 
 @RestController
 public class RestLobbyController {
 
     private final LobbyService lobbyService;
+    private final SimpMessagingTemplate messagingTemplate;
+    private ImageService imageService; // dont touch this
 
-    public RestLobbyController(LobbyService lobbyService) {
+
+    public RestLobbyController(SimpMessagingTemplate messagingTemplate, LobbyService lobbyService) {
+        this.messagingTemplate = messagingTemplate;
         this.lobbyService = lobbyService;
+        this.imageService = new ImageService();
     }
 
     @PostMapping("/lobby")
@@ -61,7 +73,7 @@ public class RestLobbyController {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
-        
+
         // Ensure the path ID matches the lobby ID in the DTO
         if (!lobbyId.equals(lobbyDTO.getLobbyID())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
@@ -78,7 +90,9 @@ public class RestLobbyController {
         
         // Update lobby using the lobby service
         Lobby updatedLobby = lobbyService.updateLobby(lobbyId, lobby, username);
-        
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, new LobbyDTO(updatedLobby));
+
         return updatedLobby;
     }
 
@@ -90,12 +104,14 @@ public class RestLobbyController {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
-        
+
         System.out.println("User " + username + " is joining lobby: " + lobbyId);
-        
+
         // Call service method to handle joining logic
         Lobby updatedLobby = lobbyService.joinLobby(lobbyId, username);
-        
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, new LobbyDTO(updatedLobby));
+
         return updatedLobby;
     }
 
@@ -107,12 +123,38 @@ public class RestLobbyController {
         if (username == null || username.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
         }
-        
+
         System.out.println("User " + username + " is leaving lobby: " + lobbyId);
-        
+
         Lobby updatedLobby = lobbyService.leaveLobby(lobbyId, username);
-        
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, new LobbyDTO(updatedLobby));
+
         return updatedLobby;
+    }
+
+    @DeleteMapping("/lobby/{lobbyId}/delete")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLobby(@PathVariable String lobbyId, @RequestParam String username) {
+        // Username check
+        if (username == null || username.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is required");
+        }
+
+        System.out.println("User " + username + " is deleting the lobby: " + lobbyId);
+
+        lobbyService.deleteLobby(lobbyId, username);
+
+        messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, Map.of("type", "delete"));
+    }
+
+    @GetMapping("/image/generate")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String generateImage(@RequestParam String prompt, @RequestParam(defaultValue = "512x512") String size) {
+        System.out.println("Generating image with prompt: " + prompt);
+        String dataUri = imageService.generateBase64(prompt, size);
+        return dataUri;
     }
 
     // For now we use this to construct a new lobby onject which will be used as an update injection for the lobby

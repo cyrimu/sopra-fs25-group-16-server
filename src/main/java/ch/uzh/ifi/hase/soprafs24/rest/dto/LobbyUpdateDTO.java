@@ -7,9 +7,9 @@ public class LobbyUpdateDTO {
     private String lobbyID;
     private String host;
     private PlayerDTO[] players;
-    private GameType type;
+    private GameType gameType;
     private SupportedLanguages language;
-    
+
     // Getters and setters
     public String getLobbyID() {
         return lobbyID;
@@ -36,11 +36,11 @@ public class LobbyUpdateDTO {
     }
     
     public GameType getType() {
-        return type;
+        return gameType;
     }
     
     public void setType(GameType type) {
-        this.type = type;
+        this.gameType = type;
     }
     
     public SupportedLanguages getLanguage() {
