@@ -344,7 +344,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "B"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "B", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "B", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -374,7 +380,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "B"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "B", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "B", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -404,7 +416,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "B"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "B", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "B", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -434,7 +452,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "D"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "D", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "D", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -464,7 +488,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "D"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "D", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "D", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -494,7 +524,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "D"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "D", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "D", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -517,7 +553,7 @@ public class GameServiceTest {
                 count++;
                 testGame.revealCard(i);
             }
-            if (count == Board.NUM_CARDS_FIRST_TEAM - 1) {
+            if (count == testGame.getNumFirstCards() - 1) {
                 break;
             }
         }
@@ -537,7 +573,14 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "B"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "B", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "B", guessMessage);
+
         String actualMessage = guessResult.getLog()[0];
 
         InMemoryStore.removeGame(testGame.getGameID());
@@ -560,7 +603,7 @@ public class GameServiceTest {
                 count++;
                 testGame.revealCard(i);
             }
-            if (count == Board.NUM_CARDS_SECOND_TEAM - 1) {
+            if (count == testGame.getNumSecondCards() - 1) {
                 break;
             }
         }
@@ -580,7 +623,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "B"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "B", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "B", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -611,7 +660,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "B"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "B", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "B", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 
@@ -641,7 +696,13 @@ public class GameServiceTest {
         Game guessResult = gameService.handleGuess(testGame.getGameID(), new Guess(guessIndex, "B"));
         Card guessedCard = guessResult.getCards()[guessIndex];
 
+        String guessMessage = String.format("Picked the %d card in row %d", (guessIndex % 4) + 1, guessIndex / 4);
+
+        // Text test
         String expectedMessage = String.format("%s made the guess: %s", "B", (String) guessedCard.getContent());
+
+        // Image test
+        // String expectedMessage = String.format("%s made the guess: %s", "B", guessMessage);
 
         InMemoryStore.removeGame(testGame.getGameID());
 

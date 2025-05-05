@@ -18,13 +18,15 @@ import java.lang.RuntimeException;
 import java.lang.IllegalArgumentException;
 
 public class Board {
-    public static final int BOARD_SIZE = 25;
-    public static final int NUM_CARDS_FIRST_TEAM = 9;
-    public static final int NUM_CARDS_SECOND_TEAM = 8;
-    public static final int NUM_CARDS_BLACK = 1;
-    public static final int NUM_CARDS_WHITE = 7;
+    public final int BOARD_SIZE;
+    public final int NUM_CARDS_FIRST_TEAM;
+    public final int NUM_CARDS_SECOND_TEAM;
+    public final int NUM_CARDS_BLACK;
+    public final int NUM_CARDS_WHITE;
 
     private static final String[] WORDS = {"ace","act","age","aid","cab","can","cap","car","cat","cog","ear","eel","egg","elf","elk","gap","gas","ice","ink","key","bow","box","bus","day","dog","eye"};
+    private static final String[] PICTURES = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+
     private static final CardFactory creator =  new CardFactory();
     private HashSet<Integer> usedIndexes;
     private Card[] mCards;
@@ -36,6 +38,12 @@ public class Board {
         else if (firstTeam == null) {validInput = false; errorMessage = "Class Board; Board Constructor: FirstTeam parameter may not be null";}
         else if (language == null) {validInput = false; errorMessage = "Class Board; Board Constructor: Language parameter may not be null";}
         if (!validInput) {throw new NullPointerException(errorMessage);}
+
+        BOARD_SIZE = (gameType == GameType.TEXT) ? 25 : 20;
+        NUM_CARDS_FIRST_TEAM = (gameType == GameType.TEXT) ? 9 : 7;
+        NUM_CARDS_SECOND_TEAM = (gameType == GameType.TEXT) ? 8 : 6;
+        NUM_CARDS_WHITE = (gameType == GameType.TEXT) ? 7 : 6;
+        NUM_CARDS_BLACK = 1;
 
         if (!((NUM_CARDS_FIRST_TEAM + NUM_CARDS_SECOND_TEAM + NUM_CARDS_BLACK + NUM_CARDS_WHITE) == (BOARD_SIZE))) {
             validInput = false;
@@ -76,7 +84,13 @@ public class Board {
             }
 
             else {
-                // Image mode will be implemented later
+                while (usedIndexes.contains(index)) {
+                    index = rand.nextInt(PICTURES.length);
+                }
+
+                usedIndexes.add(index);
+                String encodedPicture = PICTURES[index];
+                list.add(creator.createImageCard(cardType, encodedPicture));
             }
         }
     }
@@ -109,5 +123,17 @@ public class Board {
 
     public void revealCard(int index) {
         mCards[index].setIsRevealed(true);
+    }
+
+    public int getBoardSize() {
+        return this.BOARD_SIZE;
+    }
+
+    public int getNumFirstCards() {
+        return this.NUM_CARDS_FIRST_TEAM;
+    }
+
+    public int getNumSecondCards() {
+        return this.NUM_CARDS_SECOND_TEAM;
     }
 }

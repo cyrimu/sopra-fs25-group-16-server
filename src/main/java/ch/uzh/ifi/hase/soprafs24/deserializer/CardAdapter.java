@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.classes.TextCard;
+import ch.uzh.ifi.hase.soprafs24.classes.ImageCard;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 
@@ -48,8 +49,10 @@ public class CardAdapter extends TypeAdapter<Card> {
                 if (gameMode == GameType.TEXT){
                     sContent = reader.nextString();
                 }
+                else if (gameMode == GameType.IMAGE){
+                    sContent = reader.nextString();
+                }
 
-                // Implement later
             }
 
             if ("mIsRevealed".equals(fieldname)) {
@@ -57,18 +60,10 @@ public class CardAdapter extends TypeAdapter<Card> {
                 isRevealed = reader.nextBoolean();
             }
         }
+
         reader.endObject(); 
-
-        if (sContent != null) {
-            return new TextCard(color, sContent, isRevealed);
-        }
-
-        else {
-            // Implemented later properly (Needed for Compilation)
-            return new TextCard(color, sContent, isRevealed);
-        }
-
-   } 
+        return (gameMode == GameType.TEXT) ? new TextCard(color, sContent, isRevealed) : new ImageCard(color, sContent, isRevealed);
+    } 
    
     @Override 
     public void write(JsonWriter writer, Card card) throws IOException { 
@@ -81,7 +76,9 @@ public class CardAdapter extends TypeAdapter<Card> {
         if (card.getType() == GameType.TEXT){
             writer.value((String) card.getContent()); 
         }
-        // Add Image case late!
+        else if (card.getType() == GameType.IMAGE){
+            writer.value((String) card.getContent()); 
+        }
         writer.name("mIsRevealed"); 
         writer.value(card.getIsRevealed()); 
         writer.endObject(); 

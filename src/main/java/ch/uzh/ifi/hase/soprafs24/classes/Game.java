@@ -201,7 +201,15 @@ public class Game {
     }
 
     public int getBoardSize() {
-        return mBoard.BOARD_SIZE;
+        return mBoard.getBoardSize();
+    }
+
+    public int getNumFirstCards() {
+        return mBoard.getNumFirstCards();
+    }
+
+    public int getNumSecondCards() {
+        return mBoard.getNumSecondCards();
     }
 
     private void initializeTeamsAndPlayers(Player[] players) throws IllegalArgumentException, NullPointerException {
