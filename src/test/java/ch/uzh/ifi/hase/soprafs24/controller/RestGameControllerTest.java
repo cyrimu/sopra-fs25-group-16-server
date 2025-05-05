@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.UUID;
 
@@ -48,6 +49,9 @@ public class RestGameControllerTest {
 
     @MockBean
     private GameService gameService;
+
+    @MockBean
+    private SimpMessagingTemplate messagingTemplate;
 
     private Game testGame;
     private Player[] testPlayersForGame;
@@ -156,7 +160,7 @@ public class RestGameControllerTest {
 
         given(gameService.createGame(any(GameConfiguration.class))).willReturn(testGame);
 
-        MockHttpServletRequestBuilder postRequest = post("/game")
+        MockHttpServletRequestBuilder postRequest = post("/game/1")
                 .param("username", usernameParam)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(testGameConfigurationDTO));
@@ -191,7 +195,7 @@ public class RestGameControllerTest {
 
     @Test
     public void createGame_noUsername_throwsBadRequest() throws Exception {
-        MockHttpServletRequestBuilder postRequest = post("/game")
+        MockHttpServletRequestBuilder postRequest = post("/game/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(testGameConfigurationDTO));
 
@@ -201,7 +205,7 @@ public class RestGameControllerTest {
 
     @Test
     public void createGame_emptyUsername_throwsBadRequest() throws Exception {
-        MockHttpServletRequestBuilder postRequest = post("/game")
+        MockHttpServletRequestBuilder postRequest = post("/game/1")
                 .param("username", "  ")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(testGameConfigurationDTO));
