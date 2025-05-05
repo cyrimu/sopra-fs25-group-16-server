@@ -4,7 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.classes.Lobby;
 import ch.uzh.ifi.hase.soprafs24.classes.Player;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.LobbyUpdateDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.PlayerDTO;
-import ch.uzh.ifi.hase.soprafs24.service.ImgService;
+import ch.uzh.ifi.hase.soprafs24.service.ImageService;
 import ch.uzh.ifi.hase.soprafs24.service.LobbyService;
 
 import java.io.IOException;
@@ -17,13 +17,12 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class RestLobbyController {
 
-    private final ImgService imageService;
-
     private final LobbyService lobbyService;
+    private ImageService imageService; // dont touch this
 
-    public RestLobbyController(LobbyService lobbyService, ImgService imgService) {
+    public RestLobbyController(LobbyService lobbyService) {
         this.lobbyService = lobbyService;
-        this.imageService = imgService;
+        this.imageService = new ImageService();
     }
 
     @PostMapping("/lobby")
@@ -126,13 +125,8 @@ public class RestLobbyController {
     @ResponseBody
     public String generateImage(@RequestParam String prompt, @RequestParam(defaultValue = "512x512") String size) {
         System.out.println("Generating image with prompt: " + prompt);
-        try {
-            String dataUri = imageService.generateBase64(prompt, size);
-            return dataUri;
-        }
-        catch (IOException | InterruptedException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error generating image: " + e.getMessage());
-        }
+        String dataUri = imageService.generateBase64(prompt, size);
+        return dataUri;
     }
 
     // For now we use this to construct a new lobby onject which will be used as an update injection for the lobby

@@ -30,7 +30,8 @@ public class LobbyServiceTest {
     // Easter Eggs for people who read the code!
 
     @InjectMocks
-    private LobbyService lobbyService;
+    private LobbyService lobbyService = new LobbyService();
+    //private ImgService imgService = new ImgService();
 
     private Lobby testLobby;
     private String testLobbyId;
