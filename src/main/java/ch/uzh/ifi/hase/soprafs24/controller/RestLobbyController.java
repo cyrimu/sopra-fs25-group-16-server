@@ -148,13 +148,12 @@ public class RestLobbyController {
         messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, Map.of("type", "delete"));
     }
 
-    @GetMapping("/image/generate")
+    @PostMapping("/image/generate")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String generateImage(@RequestParam String prompt, @RequestParam(defaultValue = "512x512") String size) {
-        System.out.println("Generating image with prompt: " + prompt);
-        String dataUri = imageService.generateBase64(prompt, size);
-        return dataUri;
+    public String generateImage() {
+        String imageData = imageService.generateBase64();
+        return imageData;
     }
 
     // For now we use this to construct a new lobby onject which will be used as an update injection for the lobby
