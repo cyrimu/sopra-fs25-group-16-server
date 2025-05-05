@@ -153,7 +153,7 @@ public class RestLobbyController {
     @ResponseBody
     public String generateImage(@RequestParam String prompt, @RequestParam(defaultValue = "512x512") String size) {
         System.out.println("Generating image with prompt: " + prompt);
-        String dataUri = imageService.generateBase64(prompt, size);
+        String dataUri = imageService.generateBase64();
         return dataUri;
     }
 
