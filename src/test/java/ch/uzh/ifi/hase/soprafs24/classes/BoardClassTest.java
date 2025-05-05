@@ -95,7 +95,7 @@ public class BoardClassTest {
         // We will just assume that aslong as the initial order of genereation was changed, shuffling was Successfull
 
         boolean isShuffled = false;
-        for (int i = 0; i < Board.NUM_CARDS_FIRST_TEAM-1; i++) {
+        for (int i = 0; i < testBoard.getNumFirstCards(); i++) {
             if (cards[i].getColor() != cards[i+1].getColor()) {
                 isShuffled = true;
             }

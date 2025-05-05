@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.classes;
 
 import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.classes.TextCard;
+import ch.uzh.ifi.hase.soprafs24.classes.ImageCard;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 
@@ -19,14 +20,16 @@ public class CardFactory {
         return new TextCard(color, word);
     }
 
-    // Will be implemented later!
-    // public createImageCard() {
-    //     // 
-    // }
+    public ImageCard createImageCard(CardColor color, String encodedPicture) throws IllegalArgumentException, NullPointerException {
+        if (color == null) {throw new NullPointerException("Class CardFactory; createImageCard: CardColor parameter cannot be null");}
+        if(encodedPicture == null) {throw new NullPointerException("Class CardFactory; createImageCard: encodedPicture parameter cannot be null");}
+        if(encodedPicture.equals("")) {throw new IllegalArgumentException("Class CardFactory; createImageCard: encodedPicture parameter cannot be empty string");}
+        return new ImageCard(color, encodedPicture);
+    }
 
     public Card copyCard(Card card) throws NullPointerException {
         if (card == null) {throw new NullPointerException("Class CardFactory; copyCard: Card parameter may never be null");}
-        Card copy = (card.getType() == GameType.TEXT) ? new TextCard(card) : null; // TODO: Implement Image Card and Substitute;
+        Card copy = (card.getType() == GameType.TEXT) ? new TextCard(card) : new ImageCard(card);
         return copy;
     }
 }

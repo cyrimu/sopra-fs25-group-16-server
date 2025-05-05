@@ -517,7 +517,7 @@ public class GameServiceTest {
                 count++;
                 testGame.revealCard(i);
             }
-            if (count == Board.NUM_CARDS_FIRST_TEAM - 1) {
+            if (count == testGame.getNumFirstCards() - 1) {
                 break;
             }
         }
@@ -560,7 +560,7 @@ public class GameServiceTest {
                 count++;
                 testGame.revealCard(i);
             }
-            if (count == Board.NUM_CARDS_SECOND_TEAM - 1) {
+            if (count == testGame.getNumSecondCards() - 1) {
                 break;
             }
         }
