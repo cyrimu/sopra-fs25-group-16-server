@@ -11,6 +11,8 @@ import ch.uzh.ifi.hase.soprafs24.rest.dto.GameDTO;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -58,6 +60,16 @@ public class GameController {
         Game modifiedGame = gameService.handleSkip(gameId, username);
 
         messagingTemplate.convertAndSend("/topic/game/" + gameId, new GameDTO(modifiedGame));
+    }
+
+    @MessageMapping("/game/{gameId}/save")
+    public void handleSaveGame(@DestinationVariable String gameId, String username) {
+        System.out.println("Received save game " + gameId);
+        System.out.println("username: " + username);
+
+        Map<String, Object> message = new HashMap<>();
+        message.put("type", "save");
+        messagingTemplate.convertAndSend("/topic/game/" + gameId, message);
     }
 
 }
