@@ -63,9 +63,8 @@ public class GameController {
     }
 
     @MessageMapping("/game/{gameId}/save")
-    public void handleSaveGame(@DestinationVariable String gameId, String username) {
+    public void handleSaveGame(@DestinationVariable String gameId) {
         System.out.println("Received save game " + gameId);
-        System.out.println("username: " + username);
 
         Map<String, Object> message = new HashMap<>();
         message.put("type", "save");
