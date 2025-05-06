@@ -4,7 +4,6 @@ public class Guess {
     private Integer cardNumber;
     private String username;
 
-    public Guess() {}
     public Guess(Integer cardNumber, String username) {
         this.cardNumber = cardNumber;
         this.username = username;
