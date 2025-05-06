@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
+import ch.uzh.ifi.hase.soprafs24.classes.GameIdUsername;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -46,13 +48,14 @@ public class LobbyController {
     }
 
     @MessageMapping("/lobby/{lobbyId}/oldGame")
-    public void handlePlayOldGame(@DestinationVariable String lobbyId, String gameId) {
+    public void handlePlayOldGame(@DestinationVariable String lobbyId, GameIdUsername gameIdUsername) {
         System.out.println("LobbyId " + lobbyId + " wants to play an old game: " + lobbyId);
 
         // Send updated ready list to all clients in the lobby
         Map<String, Object> message = new HashMap<>();
         message.put("type", "game");
-        message.put("gameId", gameId);
+        message.put("gameId", gameIdUsername.gameId);
+        message.put("username", gameIdUsername.username);
 
         messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, message);
     }
