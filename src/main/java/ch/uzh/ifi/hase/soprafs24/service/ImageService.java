@@ -1,8 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.bson.Document;
@@ -16,10 +19,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.ReplaceOptions;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.images.ImageGenerateParams;
 import com.openai.models.images.ImageModel;
+
+import ch.uzh.ifi.hase.soprafs24.classes.Card;
+import ch.uzh.ifi.hase.soprafs24.classes.MongoDB;
+
 import java.io.IOException;
 
 @Service
@@ -30,14 +42,20 @@ public class ImageService {
     private static final String MODEL  = "gpt-image-1";
     private static final String SIZE   = "1024x1024";
     private static final String QUAL   = "low";
-    
+
+    private static final GsonBuilder builder = new GsonBuilder();
+    private static final Gson gson = builder.create();
+    private static MongoDB mongoDB = new MongoDB();
+    private static MongoDatabase database = mongoDB.getDatabase();
+    private static MongoCollection<Document> imagesCollection = database.getCollection("images");
+
+    private static record StoredImage(String mImageID, String base64) {}
 
     public ImageService() {
 
     }
 
     public String generateBase64() {
-
 
         String a = pick();
         String b = pickDistinct(a);
@@ -65,8 +83,81 @@ public class ImageService {
                 .findFirst()
                 .flatMap(image -> image.b64Json())
                 .orElseThrow();
+
+        String imageId = UUID.randomUUID().toString();
+        saveImage(imageId, base64);
     
         return base64;
+    }
+
+
+    public Map<String, String> generateManyImages(Integer n) {
+        OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+        Map<String, String> imageMap = new HashMap<>();
+        System.out.println("Generating " + n + " images");
+        
+        if (n < 1 || n > 25) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "n must be between 1 and 25");
+        }
+
+        String a = pick();
+        String b = pickDistinct(a);
+    
+        String prompt = """
+            Use colors such as black and white and grey. No other intense colors.
+            The picture should have an illustration of %s and %s with bold black outlines and minimal shading.
+            Find a creative way to combine the two subjects so that they are not just side by side.
+            """.formatted(a, b);
+    
+        ImageGenerateParams imageGenerateParams = ImageGenerateParams.builder()
+                .prompt(prompt)
+                .model(MODEL)
+                .quality(ImageGenerateParams.Quality.LOW)
+                .n(n)
+                .build();
+    
+        List<String> base64List = client.images().generate(imageGenerateParams).data()
+                .orElseThrow()
+                .stream()
+                .map(image -> image.b64Json().orElseThrow())
+                .toList();
+    
+        for (String base64 : base64List) {
+            String imageId = UUID.randomUUID().toString();
+            saveImage(imageId, base64);
+            imageMap.put(imageId, base64);
+        }
+    
+        return imageMap;
+    }
+    
+    public Map<String, String> retrieveImage() {
+        Document randomDoc = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 1)))).first();
+    
+        if (randomDoc == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No images found in the database");
+        }
+    
+        String imageId = randomDoc.getString("mImageID");
+        String base64 = randomDoc.getString("base64");
+    
+        Map<String, String> imageData = new HashMap<>();
+        imageData.put("imageId", imageId);
+        imageData.put("base64", base64);
+        return imageData;
+    }
+    
+    public void saveImage(String imageId, String base64Str) {
+        if (imageId == null || base64Str == null) {
+            throw new IllegalArgumentException("imageId and base64Str must not be null");
+        }
+    
+        String json   = gson.toJson(new StoredImage(imageId, base64Str));
+        Document bson = Document.parse(json);
+        Document filter        = new Document("mImageID", imageId);
+        ReplaceOptions options = new ReplaceOptions().upsert(true);
+        imagesCollection.replaceOne(filter, bson, options);
+
     }
 
     private static final List<String> POOL = List.of(
@@ -86,6 +177,10 @@ public class ImageService {
         "switch","outlet","bulb","fan","heater","thermostat","alarm","whistle","dice",
         "playing card","puzzle","sticker","marker"
     );
+
+
+
+    
 
     private static String pick() {
         return POOL.get(ThreadLocalRandom.current().nextInt(POOL.size()));

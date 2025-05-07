@@ -151,9 +151,23 @@ public class RestLobbyController {
     @PostMapping("/image/generate")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public String generateImage() {
-        String imageData = imageService.generateBase64();
-        return imageData;
+    public String generateImage(@RequestParam Integer mode) {
+        System.out.println("Generating images with mode: " + mode);
+        if (mode == 5) {
+            // Generate 5 images and return the map of image IDs and base64 strings
+            Map<String, String> imageMap = imageService.generateManyImages(5);
+            return imageMap.toString(); // Convert the map to a string representation for the response
+        } else if (mode == 1) {
+            // Generate a single image and return the base64 string
+            String imageData = imageService.generateBase64();
+            return imageData;
+        } else if (mode == 0) {
+            // Retrieve a random image from the database and return the base64 string
+            Map<String, String> imageData = imageService.retrieveImage();
+            return imageData.toString(); // Convert the map to a string representation for the response
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid mode. Use 1 for single image or 5 for multiple images.");
+        }
     }
 
     // For now we use this to construct a new lobby onject which will be used as an update injection for the lobby
