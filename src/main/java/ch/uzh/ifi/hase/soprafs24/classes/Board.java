@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.classes.CardFactory;
 import ch.uzh.ifi.hase.soprafs24.classes.TextCard;
 import ch.uzh.ifi.hase.soprafs24.classes.DeepLTranslator;
+import ch.uzh.ifi.hase.soprafs24.service.ImageService;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
@@ -28,6 +29,7 @@ public class Board {
     private static final String[] PICTURES = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
     private static final CardFactory creator =  new CardFactory();
+    private static final ImageService imageService = new ImageService();
     private HashSet<Integer> usedIndexes;
     private Card[] mCards;
 
@@ -84,12 +86,7 @@ public class Board {
             }
 
             else {
-                while (usedIndexes.contains(index)) {
-                    index = rand.nextInt(PICTURES.length);
-                }
-
-                usedIndexes.add(index);
-                String encodedPicture = PICTURES[index];
+                String encodedPicture = imageService.generateBase64();
                 list.add(creator.createImageCard(cardType, encodedPicture));
             }
         }
