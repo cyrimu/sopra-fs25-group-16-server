@@ -22,8 +22,6 @@ public class Lobby {
     SupportedLanguages mLanguage;
     Game mCurrentGame;
 
-    // started implementing this because I need something so that i can start making the calls 
-
     public Lobby(String host, Player[] players, GameType type, SupportedLanguages language) {
         this.mLobbyID = UUID.randomUUID().toString().substring(0,ID_LENGTH);
         this.mHost = host;
