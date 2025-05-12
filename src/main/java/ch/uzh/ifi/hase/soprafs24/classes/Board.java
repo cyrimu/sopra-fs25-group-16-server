@@ -79,6 +79,7 @@ public class Board {
     private void generateCards(int number, GameType gameType, CardColor cardType, ArrayList<Card> list, SupportedLanguages language) {
         Random rand = new Random();
         int index = rand.nextInt(WORDS.length);
+        String encodedPicture = "";
         for (int i = 0; i < number; i++) {
             if (gameType == GameType.TEXT) {
                 index = rand.nextInt(WORDS.length);
@@ -101,13 +102,12 @@ public class Board {
                 }
 
                 if (cardType == CardColor.BLACK){
-                    String encodedPicture = imageService.generateBase64();
-                    list.add(creator.createImageCard(cardType, encodedPicture));
+                    list.add(creator.createImageCard(cardType, imageService.generateBase64()));
                 }
                 else {
                     usedIndexes.add(index);
-                    String encodedPicture = storedImages[index];
-                    list.add(creator.createImageCard(cardType, encodedPicture));
+                    list.add(creator.createImageCard(cardType, storedImages[index]));
+                    storedImages[index] = null;
                 }
             }
         }
