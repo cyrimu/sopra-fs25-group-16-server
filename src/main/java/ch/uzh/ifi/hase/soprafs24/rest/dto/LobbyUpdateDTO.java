@@ -35,12 +35,12 @@ public class LobbyUpdateDTO {
         this.players = players;
     }
     
-    public GameType getType() {
+    public GameType getGameType() {
         return gameType;
     }
     
-    public void setType(GameType type) {
-        this.gameType = type;
+    public void setGameType(GameType gameType) {
+        this.gameType = gameType;
     }
     
     public SupportedLanguages getLanguage() {

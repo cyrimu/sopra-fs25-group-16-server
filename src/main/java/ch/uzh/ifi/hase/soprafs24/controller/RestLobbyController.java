@@ -87,7 +87,6 @@ public class RestLobbyController {
         }
 
         Lobby lobby = convertLobbyUpdateDTOToLobby(lobbyDTO);
-        
         // Update lobby using the lobby service
         Lobby updatedLobby = lobbyService.updateLobby(lobbyId, lobby, username);
 
@@ -196,7 +195,7 @@ public class RestLobbyController {
         return new Lobby(
             dto.getHost(),
             players,
-            dto.getType(),
+            dto.getGameType(),
             dto.getLanguage()
         );
     }

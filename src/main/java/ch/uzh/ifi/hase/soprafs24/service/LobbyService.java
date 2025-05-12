@@ -96,6 +96,7 @@ public class LobbyService {
         }
 
         // Updating GameType
+        System.out.println("Updating GameType from " + existingLobby.getGameType() + " to " + lobbyUpdateRequest.getGameType());
         if (lobbyUpdateRequest.getGameType() != null && !lobbyUpdateRequest.getGameType().equals(existingLobby.getGameType())) {
             System.out.println("Updating GameType from " + existingLobby.getGameType() + " to " + lobbyUpdateRequest.getGameType());
             existingLobby.setGameType(lobbyUpdateRequest.getGameType());
