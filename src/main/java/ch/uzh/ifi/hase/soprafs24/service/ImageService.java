@@ -153,7 +153,7 @@ public class ImageService {
 
     public String[] retrieve20Images() {
         List<Document> randomDocs = new ArrayList<>();
-        try (MongoCursor<Document> cursor = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 20)))).allowDiskUse(true).iterator()) {
+        try (MongoCursor<Document> cursor = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 5)))).allowDiskUse(true).iterator()) {
             while (cursor.hasNext()) {
                 randomDocs.add(cursor.next());
             }
