@@ -168,7 +168,7 @@ public class RestLobbyController {
         } else if (mode == 20) {
             // retrieve random 20 Images from the database
             // return String.join("\n\n\n", imageService.retrieve20Images());
-            String[] images = imageService.retrieve20Images()
+            String[] images = imageService.retrieve20Images();
             Random rand = new Random();
             int index = rand.nextInt(images.length);
             return images[index];
