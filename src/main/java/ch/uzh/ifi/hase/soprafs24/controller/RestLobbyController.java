@@ -167,7 +167,12 @@ public class RestLobbyController {
         } else if (mode == 20) {
             // retrieve random 20 Images from the database
             String[] imageData = imageService.retrieve20Images();
-            return imageData.toString(); // Convert the map to a string representation for the response
+            String imageCollection = "";
+            for (String image : imageData) {
+                imageCollection += image;
+                imageCollection += "\n\n\n\n";
+            }
+            return imageCollection;
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid mode. Use 1 for single image or 5 for multiple images.");
         }
