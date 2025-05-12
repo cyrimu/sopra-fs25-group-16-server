@@ -149,7 +149,7 @@ public class ImageService {
     }
 
     public String[] retrieve20Images() {
-        List<Document> randomDocs = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 20)))).into(new ArrayList<>()); 
+        List<Document> randomDocs = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 20)))).allowDiskUse(true).into(new ArrayList<>()); 
         String base64 = "";
         ArrayList<String> images = new ArrayList<String>();
         for (Document image : randomDocs) {
