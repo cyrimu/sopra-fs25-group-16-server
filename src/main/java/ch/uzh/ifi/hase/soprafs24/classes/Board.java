@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.SupportedLanguages;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 
 import java.lang.NullPointerException;
 import java.lang.RuntimeException;
@@ -30,7 +31,7 @@ public class Board {
 
     private static final CardFactory creator =  new CardFactory();
     private static final ImageService imageService = new ImageService();
-    private HashSet<Integer> usedIndexes;
+    private HashSet<String> usedIndexes;
     private Card[] mCards;
 
     public Board(GameType gameType, TeamColor firstTeam, SupportedLanguages language) throws NullPointerException {
@@ -54,7 +55,7 @@ public class Board {
         else if (!(WORDS.length >= BOARD_SIZE)) {validInput = false; errorMessage = "Class Board; Board Constructor: Not Enough Words for generation stored!";}
         if (!validInput) {throw new RuntimeException(errorMessage);}
 
-        this.usedIndexes = new HashSet<Integer>();
+        this.usedIndexes = new HashSet<String>();
         ArrayList<Card> cardList = new ArrayList<Card>(BOARD_SIZE);
         CardColor colorFirstTeam = (firstTeam == TeamColor.RED) ? CardColor.RED : CardColor.BLUE;
         CardColor colorSecondTeam = (firstTeam == TeamColor.RED) ? CardColor.BLUE : CardColor.RED;
@@ -70,15 +71,15 @@ public class Board {
 
     private void generateCards(int number, GameType gameType, CardColor cardType, ArrayList<Card> list, SupportedLanguages language) {
         Random rand = new Random();
-        int index = rand.nextInt(WORDS.length);
+        String index = String.valueOf(rand.nextInt(WORDS.length));
         for (int i = 0; i < number; i++) {
             if (gameType == GameType.TEXT) {
                 while (usedIndexes.contains(index)) {
-                    index = rand.nextInt(WORDS.length);
+                    index = String.valueOf(rand.nextInt(WORDS.length));
                 }
 
                 usedIndexes.add(index);
-                String cardWord = WORDS[index];
+                String cardWord = WORDS[Integer.parseInt(index)];
                 if (language != SupportedLanguages.ENGLISH) {
                     cardWord = DeepLTranslator.translateWord(cardWord, language);
                 }
@@ -86,8 +87,21 @@ public class Board {
             }
 
             else {
-                String encodedPicture = imageService.generateBase64();
-                list.add(creator.createImageCard(cardType, encodedPicture));
+                if (cardType == CardColor.BLACK){
+                    String encodedPicture = imageService.generateBase64();
+                    list.add(creator.createImageCard(cardType, encodedPicture));
+                }
+                
+                else {
+                    Map<String, String> storedImageData = imageService.retrieveImage();
+                    while (usedIndexes.contains(((String[])(storedImageData.keySet().toArray()))[0])) {
+                        storedImageData = imageService.retrieveImage();
+                    }
+                    String imageID = ((String[])(storedImageData.keySet().toArray()))[0];
+                    usedIndexes.add(imageID);
+                    String encodedPicture = storedImageData.get(imageID);
+                    list.add(creator.createImageCard(cardType, encodedPicture));
+                }
             }
         }
     }
