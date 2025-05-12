@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
+import java.util.Random;
 
 
 @RestController
@@ -168,6 +169,7 @@ public class RestLobbyController {
             // retrieve random 20 Images from the database
             // return String.join("\n\n\n", imageService.retrieve20Images());
             String[] images = imageService.retrieve20Images()
+            Random rand = new Random();
             int index = rand.nextInt(images.length);
             return images[index];
         } else {
