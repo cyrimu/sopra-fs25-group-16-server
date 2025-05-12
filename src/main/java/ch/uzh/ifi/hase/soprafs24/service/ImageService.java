@@ -22,8 +22,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.model.ReplaceOptions;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -149,7 +152,11 @@ public class ImageService {
     }
 
     public String[] retrieve20Images() {
-        List<Document> randomDocs = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 20)))).allowDiskUse(true).into(new ArrayList<>()); 
+        List<Document> randomDocs = imagesCollection.aggregate(
+            List.of(Aggregates.sample(20)),
+            AggregationOptions.builder().allowDiskUse(true).build()
+        ).into(new ArrayList<>()); 
+        
         String base64 = "";
         ArrayList<String> images = new ArrayList<String>();
         for (Document image : randomDocs) {
