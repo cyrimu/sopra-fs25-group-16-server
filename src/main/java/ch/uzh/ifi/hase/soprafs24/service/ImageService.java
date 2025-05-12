@@ -153,7 +153,8 @@ public class ImageService {
 
     public String[] retrieve20Images() {
         String[] images = new String[20];
-        try (MongoCursor<Document> cursor = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 20)))).allowDiskUse(true).iterator()) {
+        try (MongoCursor<Document> cursor = imagesCollection.aggregate(List.of(
+            new Document("$sample", new Document("size", 20)))).allowDiskUse(true).iterator()) {
             int index = 0;
             while (cursor.hasNext()) {
                 images[index] = cursor.next().getString("base64");
