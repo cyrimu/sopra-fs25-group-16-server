@@ -71,6 +71,7 @@ public class Board {
         generateCards(NUM_CARDS_BLACK, gameType, CardColor.BLACK, cardList, language);
         generateCards(NUM_CARDS_WHITE, gameType, CardColor.WHITE, cardList, language);
 
+        storedImages = null;
         this.mCards = cardList.toArray(new Card[0]);
         shuffleCards();
     }
