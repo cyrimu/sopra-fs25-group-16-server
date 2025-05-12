@@ -97,12 +97,12 @@ public class Board {
             else {
                 index = rand.nextInt(storedImages.length);
                 while (usedIndexes.contains(index)) {
-                    index = rand.nextInt(WORDS.length);
+                    index = rand.nextInt(storedImages.length);
                 }
 
                 if (cardType == CardColor.BLACK){
-                    // String encodedPicture = imageService.generateBase64();
-                    list.add(creator.createImageCard(cardType, "a"));
+                    String encodedPicture = imageService.generateBase64();
+                    list.add(creator.createImageCard(cardType, encodedPicture));
                 }
                 else {
                     usedIndexes.add(index);
