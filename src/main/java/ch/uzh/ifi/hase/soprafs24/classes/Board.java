@@ -91,13 +91,13 @@ public class Board {
                     String encodedPicture = imageService.generateBase64();
                     list.add(creator.createImageCard(cardType, encodedPicture));
                 }
-                
+
                 else {
                     Map<String, String> storedImageData = imageService.retrieveImage();
-                    while (usedIndexes.contains(((String[])(storedImageData.keySet().toArray()))[0])) {
+                    while (usedIndexes.contains(storedImageData.entrySet().iterator().next().getKey())) {
                         storedImageData = imageService.retrieveImage();
                     }
-                    String imageID = ((String[])(storedImageData.keySet().toArray()))[0];
+                    String imageID = storedImageData.entrySet().iterator().next().getKey();
                     usedIndexes.add(imageID);
                     String encodedPicture = storedImageData.get(imageID);
                     list.add(creator.createImageCard(cardType, encodedPicture));
