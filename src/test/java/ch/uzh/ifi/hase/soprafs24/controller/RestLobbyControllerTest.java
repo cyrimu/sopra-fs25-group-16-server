@@ -213,7 +213,7 @@ public class RestLobbyControllerTest {
         dto.setLobbyID(lobbyId);
         dto.setHost(username);
         dto.setPlayers(new PlayerDTO[] { new PlayerDTO(username), null, null, null });
-        dto.setType(GameType.TEXT);
+        dto.setGameType(GameType.TEXT);
         dto.setLanguage(SupportedLanguages.ENGLISH);
 
         given(lobbyService.updateLobby(eq(lobbyId), any(Lobby.class), eq(username)))
