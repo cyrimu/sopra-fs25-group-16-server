@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -145,6 +146,17 @@ public class ImageService {
         imageData.put("imageId", imageId);
         imageData.put("base64", base64);
         return imageData;
+    }
+
+    public String[] retrieve20Images() {
+        List<Document> randomDocs = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 20)))).into(new ArrayList<>()); 
+        String base64 = "";
+        ArrayList<String> images = new ArrayList<String>();
+        for (Document image : randomDocs) {
+            base64 = image.getString("base64");
+            images.add(base64);
+        }
+        return images.toArray(new String[0]);
     }
     
     public void saveImage(String imageId, String base64Str) {

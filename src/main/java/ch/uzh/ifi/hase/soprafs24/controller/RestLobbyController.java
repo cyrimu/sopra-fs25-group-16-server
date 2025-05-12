@@ -164,6 +164,10 @@ public class RestLobbyController {
             // Retrieve a random image from the database and return the base64 string
             Map<String, String> imageData = imageService.retrieveImage();
             return imageData.toString(); // Convert the map to a string representation for the response
+        } else if (mode == 20) {
+            // retrieve random 20 Images from the database
+            String[] imageData = imageService.retrieve20Images();
+            return imageData.toString(); // Convert the map to a string representation for the response
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid mode. Use 1 for single image or 5 for multiple images.");
         }
