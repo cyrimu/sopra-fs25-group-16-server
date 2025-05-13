@@ -85,10 +85,6 @@ public class GameService {
 
         Game retrievedGame = storedGame.get();
 
-        // verifying user is host
-        if (!retrievedGame.getHost().equals(username)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not host of this game");
-        }
         return retrievedGame;
     }
 
