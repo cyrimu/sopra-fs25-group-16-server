@@ -317,9 +317,7 @@ public class GameService {
     }
 
     private void saveGame(Game game) {
-        String json = gson.toJson(game);
-        Document gameDocument = Document.parse(json);
-
+        Document gameDocument = Document.parse(gson.toJson(game));
         Document filter = new Document("mGameID", game.getGameID());
         ReplaceOptions options = new ReplaceOptions().upsert(true);
         gamesCollection.replaceOne(filter, gameDocument, options);

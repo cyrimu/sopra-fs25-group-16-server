@@ -156,10 +156,20 @@ public class ImageService {
         String[] images = new String[20];
         int index = 0;
         for (Document doc : randomDocs) {
-            images[index] = doc.getString("base64");
+            images[index] = doc.getString("mImageID");
             index += 1;
         }
         return images;
+    }
+
+    public String getImage(String imageID) {
+        Document query = new Document("mImageID", imageID); 
+        Document image = imagesCollection.find(query).first(); 
+        if (image != null) {
+            return image.getString("base64");
+        } else {
+            return "";
+        }
     }
     
     public void saveImage(String imageId, String base64Str) {

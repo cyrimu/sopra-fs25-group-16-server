@@ -102,7 +102,10 @@ public class Board {
                 }
 
                 if (cardType == CardColor.BLACK){
-                    list.add(creator.createImageCard(cardType, imageService.generateBase64()));
+                    // list.add(creator.createImageCard(cardType, imageService.generateBase64()));
+                    usedIndexes.add(index);
+                    list.add(creator.createImageCard(cardType, storedImages[index]));
+                    storedImages[index] = null;
                 }
                 else {
                     usedIndexes.add(index);
