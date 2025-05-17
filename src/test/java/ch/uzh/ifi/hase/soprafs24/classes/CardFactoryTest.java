@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs24.classes;
 
 import ch.uzh.ifi.hase.soprafs24.classes.CardFactory;
 import ch.uzh.ifi.hase.soprafs24.classes.TextCard;
+import ch.uzh.ifi.hase.soprafs24.classes.ImageCard;
 import ch.uzh.ifi.hase.soprafs24.constant.TeamColor;
 import ch.uzh.ifi.hase.soprafs24.constant.CardColor;
 import ch.uzh.ifi.hase.soprafs24.constant.GameType;
@@ -22,21 +23,98 @@ public class CardFactoryTest {
 
     @InjectMocks
     private CardFactory creator = new CardFactory();
-    private TextCard testCard = creator.createTextCard(CardColor.WHITE, "Tree");
+    private TextCard testTextCard = creator.createTextCard(CardColor.WHITE, "Tree");
+    private ImageCard testImageCard = creator.createImageCard(CardColor.WHITE, "abc-1234");
+
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
-        testCard = creator.createTextCard(CardColor.WHITE, "Tree");
+        testTextCard = creator.createTextCard(CardColor.WHITE, "Tree");
+        testImageCard = creator.createImageCard(CardColor.WHITE, "abc-1234");
+    }
+
+    @Test
+    public void imageCardConstructor_Succeds() {
+        testImageCard = creator.createImageCard(CardColor.WHITE, "abc-1234");
+        assertEquals(testImageCard.getType(), GameType.IMAGE);
+        assertEquals(testImageCard.getColor(), CardColor.WHITE);
+        assertEquals(testImageCard.getContent(), "abc-1234");
+        assertEquals(testImageCard.getIsRevealed(), false);
+    }
+
+    @Test
+    public void imageCardConstructorNotAcceptEmptyString() {
+        Exception exception = assertThrows( 
+            IllegalArgumentException.class, 
+            () -> {
+            testImageCard = creator.createImageCard(CardColor.WHITE, "");
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class CardFactory; createImageCard: encodedPicture parameter cannot be empty string";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void imageCardConstructorNotAcceptNullWord() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            testImageCard = creator.createImageCard(CardColor.WHITE, null);
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class CardFactory; createImageCard: encodedPicture parameter cannot be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void imageCardConstructorNotAcceptNullColor() {
+        Exception exception = assertThrows( 
+            NullPointerException.class, 
+            () -> {
+            testImageCard = creator.createImageCard(null, "abc-1234");
+            },
+            "Expected previous Instruction to throw, but it did not."
+            );
+
+        String expectedMessage = "Class CardFactory; createImageCard: CardColor parameter cannot be null";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void imageCardCopyConstructorCreatesDeepCopy() {
+        ImageCard copyCard = (ImageCard) creator.copyCard(testImageCard);
+
+        assertEquals(testImageCard.getType(), copyCard.getType());
+        assertEquals(testImageCard.getColor(), copyCard.getColor());
+        assertEquals(testImageCard.getContent(), copyCard.getContent());
+        assertEquals(testImageCard.getIsRevealed(), copyCard.getIsRevealed());
+
+        // Modify copy -> No modification of original should occur.
+        copyCard.setIsRevealed(true);
+        copyCard.setContent("cda-1234");
+
+        assertNotSame(testImageCard.getContent(), copyCard.getContent());
+        assertNotSame(testImageCard.getIsRevealed(), copyCard.getIsRevealed());
     }
 
     @Test
     public void textCardConstructor_Succeds() {
-        testCard = creator.createTextCard(CardColor.WHITE, "Tree");
-        assertEquals(testCard.getType(), GameType.TEXT);
-        assertEquals(testCard.getColor(), CardColor.WHITE);
-        assertEquals(testCard.getContent(), "Tree");
-        assertEquals(testCard.getIsRevealed(), false);
+        testTextCard = creator.createTextCard(CardColor.WHITE, "Tree");
+        assertEquals(testTextCard.getType(), GameType.TEXT);
+        assertEquals(testTextCard.getColor(), CardColor.WHITE);
+        assertEquals(testTextCard.getContent(), "Tree");
+        assertEquals(testTextCard.getIsRevealed(), false);
     }
 
     @Test
@@ -44,7 +122,7 @@ public class CardFactoryTest {
         Exception exception = assertThrows( 
             IllegalArgumentException.class, 
             () -> {
-            testCard = creator.createTextCard(CardColor.WHITE, "");
+            testTextCard = creator.createTextCard(CardColor.WHITE, "");
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -60,7 +138,7 @@ public class CardFactoryTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            testCard = creator.createTextCard(CardColor.WHITE, null);
+            testTextCard = creator.createTextCard(CardColor.WHITE, null);
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -76,7 +154,7 @@ public class CardFactoryTest {
         Exception exception = assertThrows( 
             NullPointerException.class, 
             () -> {
-            testCard = creator.createTextCard(null, "Tree");
+            testTextCard = creator.createTextCard(null, "Tree");
             },
             "Expected previous Instruction to throw, but it did not."
             );
@@ -86,24 +164,6 @@ public class CardFactoryTest {
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
-    //Temporarily disabled since translation regex needs to be created.
-
-    // @Test
-    // public void textCardConstructorOnlyAcceptLetterWord() {
-    //     Exception exception = assertThrows( 
-    //         IllegalArgumentException.class, 
-    //         () -> {
-    //         testCard = creator.createTextCard(CardColor.WHITE, "123");
-    //         },
-    //         "Expected previous Instruction to throw, but it did not."
-    //         );
-
-    //     String expectedMessage = "Class TextCard; isValidWord: Only Strings which consist solely out of letters can be used: i.e. tree or Mensch etc.";
-    //     String actualMessage = exception.getMessage();
-
-    //     assertTrue(actualMessage.contains(expectedMessage));
-    // }
 
     @Test
     public void copyCardNotAcceptNullCard() {
@@ -124,18 +184,18 @@ public class CardFactoryTest {
 
     @Test
     public void textCardCopyConstructorCreatesDeepCopy() {
-        TextCard copyCard = (TextCard) creator.copyCard(testCard);
+        TextCard copyCard = (TextCard) creator.copyCard(testTextCard);
 
-        assertEquals(testCard.getType(), copyCard.getType());
-        assertEquals(testCard.getColor(), copyCard.getColor());
-        assertEquals(testCard.getContent(), copyCard.getContent());
-        assertEquals(testCard.getIsRevealed(), copyCard.getIsRevealed());
+        assertEquals(testTextCard.getType(), copyCard.getType());
+        assertEquals(testTextCard.getColor(), copyCard.getColor());
+        assertEquals(testTextCard.getContent(), copyCard.getContent());
+        assertEquals(testTextCard.getIsRevealed(), copyCard.getIsRevealed());
 
         // Modify copy -> No modification of original should occur.
         copyCard.setIsRevealed(true);
         copyCard.setContent("Tower");
 
-        assertNotSame(testCard.getContent(), copyCard.getContent());
-        assertNotSame(testCard.getIsRevealed(), copyCard.getIsRevealed());
+        assertNotSame(testTextCard.getContent(), copyCard.getContent());
+        assertNotSame(testTextCard.getIsRevealed(), copyCard.getIsRevealed());
     }
 }

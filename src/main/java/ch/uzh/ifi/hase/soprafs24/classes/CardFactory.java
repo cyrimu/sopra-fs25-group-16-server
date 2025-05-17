@@ -21,7 +21,7 @@ public class CardFactory {
     }
 
     public ImageCard createImageCard(CardColor color, String encodedPicture) throws IllegalArgumentException, NullPointerException {
-        if (color == null) {throw new NullPointerException("Class CardFactory; createImageCard: CardColor parameter cannot be null");}
+        if(color == null) {throw new NullPointerException("Class CardFactory; createImageCard: CardColor parameter cannot be null");}
         if(encodedPicture == null) {throw new NullPointerException("Class CardFactory; createImageCard: encodedPicture parameter cannot be null");}
         if(encodedPicture.equals("")) {throw new IllegalArgumentException("Class CardFactory; createImageCard: encodedPicture parameter cannot be empty string");}
         return new ImageCard(color, encodedPicture);

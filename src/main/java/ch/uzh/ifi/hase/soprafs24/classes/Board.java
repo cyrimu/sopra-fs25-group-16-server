@@ -78,13 +78,6 @@ public class Board {
         NUM_CARDS_WHITE = (gameType == GameType.TEXT) ? 7 : 6;
         NUM_CARDS_BLACK = 1;
 
-        if (!((NUM_CARDS_FIRST_TEAM + NUM_CARDS_SECOND_TEAM + NUM_CARDS_BLACK + NUM_CARDS_WHITE) == (BOARD_SIZE))) {
-            validInput = false;
-            errorMessage = "Class Board; Board Constructor: Board Constants do not add up!";
-        }
-        else if (!(WORDS.length >= BOARD_SIZE)) {validInput = false; errorMessage = "Class Board; Board Constructor: Not Enough Words for generation stored!";}
-        if (!validInput) {throw new RuntimeException(errorMessage);}
-
         if (gameType == GameType.IMAGE) {
             storedImages = imageService.retrieve20Images();
         }
