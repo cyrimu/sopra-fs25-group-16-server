@@ -12,7 +12,7 @@ COPY src /app/src
 # Build the server
 RUN ./gradlew clean build --no-daemon --stacktrace --info
 
-# make image smaller by using multi stage build
+# make image smaller by using multi-stage build
 FROM openjdk:17-slim
 # Set the env to "production"
 ENV SPRING_PROFILES_ACTIVE=production
@@ -20,9 +20,11 @@ ENV SPRING_PROFILES_ACTIVE=production
 USER 3301
 # Set container working directory to /app
 WORKDIR /app
-# copy built artifact from build stage
-COPY --from=build /app/build/libs/*.jar /app/soprafs24.jar
+# Create a directory for jar files
+RUN mkdir -p /app/jars
+# copy built artifact from build stage to a directory
+COPY --from=build /app/build/libs/*.jar /app/jars/
 # Expose the port on which the server will be running (based on application.properties)
 EXPOSE 8080
-# start server
-CMD ["java", "-jar", "/app/soprafs24.jar"]
+# start server - adjusting the CMD to point to the new jar path
+CMD ["java", "-jar", "/app/jars/soprafs24.jar"]
