@@ -10,7 +10,7 @@ RUN chmod +x ./gradlew
 COPY build.gradle settings.gradle /app/
 COPY src /app/src
 # Build the server
-RUN ./gradlew clean build --no-daemon
+RUN ./gradlew clean build --no-daemon --stacktrace --info
 
 # make image smaller by using multi stage build
 FROM openjdk:17-slim
