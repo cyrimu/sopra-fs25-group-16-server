@@ -2,7 +2,7 @@
 # https://cloud.google.com/appengine/docs/standard
 
 env: flex
-runtime: java-17
+runtime: java17
 instance_class: F2
 entrypoint: java -jar /app/jars/soprafs24.jar
 
