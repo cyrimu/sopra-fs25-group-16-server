@@ -48,7 +48,6 @@ jobs:
         uses: google-github-actions/deploy-appengine@v1
         with:
           deliverables: app.yaml
-          version: v1
           env_vars: |
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
   
