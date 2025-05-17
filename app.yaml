@@ -6,10 +6,17 @@ runtime: custom
 instance_class: F2
 entrypoint: java -jar /app/jars/soprafs24.jar
 
-# Enable health checks
-health_check:
-  enable_health_check: true
-  check_interval_sec: 5     # Time between health checks
-  timeout_sec: 4            # Maximum time to wait for a health check
-  unhealthy_threshold: 2     # Number of failed checks before marking as unhealthy
-  healthy_threshold: 2       # Number of successful checks before marking as healthy
+liveness_check:
+  path: "/liveness_check"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+readiness_check:
+  path: "/readiness_check"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300
