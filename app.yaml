@@ -2,4 +2,5 @@
 # https://cloud.google.com/appengine/docs/standard
 
 runtime: java17
+env: flex
 instance_class: F2
