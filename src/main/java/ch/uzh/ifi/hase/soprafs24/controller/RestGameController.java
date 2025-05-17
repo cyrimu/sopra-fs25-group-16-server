@@ -80,7 +80,7 @@ public class RestGameController {
         Player[] players = new Player[playerDTOs.length];
 
         for (int i = 0; i < playerDTOs.length; i++) {
-            players[i] = new Player(playerDTOs[i].getPlayerName());
+            players[i] = new Player(playerDTOs[i].getPlayerName(), playerDTOs[i].getRole());
         }
 
         gameConfiguration.setID(UUID.randomUUID().toString().substring(0, Game.ID_LENGTH));
@@ -90,10 +90,10 @@ public class RestGameController {
         gameConfiguration.addPlayer(players[2]);
         gameConfiguration.addPlayer(players[3]);
 
-        gameConfiguration.setPlayerRole(players[0].getPlayerName(), PlayerRoles.BLUE_SPYMASTER);
-        gameConfiguration.setPlayerRole(players[1].getPlayerName(), PlayerRoles.BLUE_OPERATIVE);
-        gameConfiguration.setPlayerRole(players[2].getPlayerName(), PlayerRoles.RED_SPYMASTER);
-        gameConfiguration.setPlayerRole(players[3].getPlayerName(), PlayerRoles.RED_OPERATIVE);
+        gameConfiguration.setPlayerRole(players[0].getPlayerName(), players[0].getRole().get());
+        gameConfiguration.setPlayerRole(players[1].getPlayerName(), players[1].getRole().get());
+        gameConfiguration.setPlayerRole(players[2].getPlayerName(), players[2].getRole().get());
+        gameConfiguration.setPlayerRole(players[3].getPlayerName(), players[3].getRole().get());
         gameConfiguration.setType(dto.getGameType());
         gameConfiguration.setLanguage(dto.getLanguage());
         
