@@ -38,7 +38,7 @@ public class LobbyService {
     private static MongoCollection<Document> lobbiesCollection = database.getCollection("lobbies");
 
     public Lobby getLobby(String LobbyId, String username) {
-        System.out.println("Handling getLobby request");
+        System.out.println("Handling getLobby requesttt");
 
         Lobby retrievedLobby = retrieveLobby(LobbyId, username);
 
@@ -263,7 +263,7 @@ public class LobbyService {
     }
 
     private Lobby retrieveLobby(String lobbyId, String username) {
-
+        System.out.println("Retrieving lobby with ID: " + lobbyId + " for user: " + username);
         Optional<Lobby> lobby = InMemoryStore.getLobby(lobbyId);
         if (!lobby.isPresent()) {
             lobby = loadLobbyFromDatabase(lobbyId);
@@ -278,8 +278,10 @@ public class LobbyService {
     }
 
     private Optional<Lobby> loadLobbyFromDatabase(String lobbyId) {
-        Document query = new Document("lobbyID", lobbyId);
+        System.out.println("Loading lobby with ID: " + lobbyId + " from database");
+        Document query = new Document("mLobbyID", lobbyId);
         Document lobbyDocument = lobbiesCollection.find(query).first();
+        
 
         if (lobbyDocument != null) {
             String lobbyJson = lobbyDocument.toJson();
