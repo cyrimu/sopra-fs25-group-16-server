@@ -26,8 +26,37 @@ public class Board {
     public final int NUM_CARDS_BLACK;
     public final int NUM_CARDS_WHITE;
 
-    private static final String[] WORDS = {"ace","act","age","aid","cab","can","cap","car","cat","cog","ear","eel","egg","elf","elk","gap","gas","ice","ink","key","bow","box","bus","day","dog","eye"};
-    private static final String[] PICTURES = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+    private static final String[] WORDS = {
+        "ace", "act", "age", "aid", "cab", "can", "cap", "car", "cat", "cog", "ear", "eel", "egg",
+        "elf", "elk", "gap", "gas", "ice", "ink", "key", "bow", "box", "bus", "day", "dog", "eye",
+        "ship", "plane", "rainbow", "tornado", "weather", "city", "tower", "house", "whale",
+        "pistol", "snake", "eagle", "wizard", "monkey", "sword", "bow", "king", "princess",
+        "earthquake", "ocean", "bottle", "dinner", "map", "shadow", "ghost", "telephone",
+        "singer", "mermaid", "book", "pearl", "crown", "flower", "pencil", "horse", "space", "demon",
+        "queen", "prince", "gun", "brazil", "germany", "france", "poland", "switzerland", "trousers",
+        "shirt", "cowboy", "rainforest", "tree", "leaf", "coconut", "almond", "apple", "orange",
+        "oil", "sunflower", "olive", "star", "river", "castle", "spider", "cactus", "knight",
+        "plum", "carrot", "panda", "banana", "jungle", "shell", "turtle", "diamond", "tablet",
+        "window", "cloud", "mountain", "bubble", "umbrella", "pillow", "sandal", "bicycle",
+        "lighthouse", "television", "basket", "dragon", "robot", "glove", "piano", "brush",
+        "squirrel", "peach", "socks", "scarf", "oyster", "flute", "ring", "trophy", "kite", 
+        "mango", "taco", "carpet", "forest", "candle", "puzzle", "wallet", "tshirt", "blanket",
+        "lobster", "bottle", "guitar", "umbrella", "ladder", "horizon", "keyboard", "microwave",
+        "zebra", "cavern", "cupcake", "telescope", "icicle", "dolphin", "piano", "goblin", 
+        "spaghetti", "vacation", "plaid", "goblet", "trumpet", "pyramid", "trolley", "cactus",
+        "walnut", "yacht", "carousel", "hat", "wig", "notebook", "potion", "fountain", "pyramid",
+        "quilt", "helicopter", "sandwich", "jacket", "cylinder", "ring", "skirt", "pendulum",
+        "pickle", "pasta", "tambourine", "camera", "laser", "biscuit", "bell", "syrup", 
+        "breeze", "chicken", "helmet", "french", "noodle", "taco", "yak", "feather", "spoon",
+        "tulip", "symphony", "fossil", "cypress", "funnel", "plow", "button", "tiger", "elf",
+        "yarn", "funnel", "sundial", "thimble", "nail", "dawn", "river", "mushroom", "spade", 
+        "sailor", "shell", "turbine", "knot", "pebble", "talon", "styrofoam", "plaque", 
+        "panel", "pepper", "crash", "butter", "turtle", "jet", "crane", "thermal", "grape", 
+        "hive", "vortex", "weasel", "marble", "balloon", "yarn", "crystal", "turf", "whistle",
+        "wrench", "mascot", "hurricane", "caviar", "crater", "scone", "jelly", "basil", 
+        "shamrock", "inkling", "scimitar", "beetle", "steam", "carol", "rack", "raven", 
+        "quasar", "cloak", "valve", "net", "quokka", "gondola", "torrid", "hemlock", "quiver"
+    };
 
     private static final CardFactory creator =  new CardFactory();
     private static final ImageService imageService = new ImageService();
