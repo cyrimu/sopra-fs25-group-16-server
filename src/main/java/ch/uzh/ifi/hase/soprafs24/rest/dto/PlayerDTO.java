@@ -15,6 +15,12 @@ public class PlayerDTO {
     public PlayerDTO(String playerName) {
         this.playerName = playerName;
     }
+
+    public PlayerDTO(String playerName, PlayerRoles role) {
+        this.playerName = playerName;
+        this.role = role;
+    }
+    
     
     // Getters and setters
     public String getPlayerName() { return playerName; }

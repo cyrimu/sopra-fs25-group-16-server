@@ -69,10 +69,10 @@ public class RestGameControllerTest {
         Player[] configPlayers = new Player[] { playerA, playerB, playerC, playerD };
 
         PlayerDTO[] playerDTOs = new PlayerDTO[] {
-                new PlayerDTO("A"),
-                new PlayerDTO("B"),
-                new PlayerDTO("C"),
-                new PlayerDTO("D")
+                new PlayerDTO("A", PlayerRoles.BLUE_SPYMASTER),
+                new PlayerDTO("B", PlayerRoles.BLUE_OPERATIVE),
+                new PlayerDTO("C", PlayerRoles.RED_SPYMASTER),
+                new PlayerDTO("D", PlayerRoles.RED_OPERATIVE)
         };
         testGameConfigurationDTO = new GameConfigurationDTO();
         testGameConfigurationDTO.setHost("A");
