@@ -16,15 +16,18 @@ RUN ./gradlew clean build --no-daemon --stacktrace --info
 FROM openjdk:17-slim
 # Set the env to "production"
 ENV SPRING_PROFILES_ACTIVE=production
-# get non-root user
+
+# Create a directory for jar files and change permissions
+RUN mkdir -p /app/jars && chown -R 3301:3301 /app/jars
+
+# Switch to the non-root user
 USER 3301
+
 # Set container working directory to /app
 WORKDIR /app
-# Create a directory for jar files
-RUN mkdir -p /app/jars
-# copy built artifact from build stage to a directory
+# Copy built artifact from build stage to a directory
 COPY --from=build /app/build/libs/*.jar /app/jars/
 # Expose the port on which the server will be running (based on application.properties)
 EXPOSE 8080
-# start server - adjusting the CMD to point to the new jar path
+# Start server - adjusting the CMD to point to the new jar path
 CMD ["java", "-jar", "/app/jars/soprafs24.jar"]
