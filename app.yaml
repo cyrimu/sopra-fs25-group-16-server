@@ -13,8 +13,3 @@ health_check:
   timeout_sec: 4            # Maximum time to wait for a health check
   unhealthy_threshold: 2     # Number of failed checks before marking as unhealthy
   healthy_threshold: 2       # Number of successful checks before marking as healthy
-
-automatic_scaling:
-  target_cpu_utilization: 0.6    # Customize CPU utilization target
-  min_num_instances: 1            # Minimum number of instances to run
-  max_num_instances: 5            # Maximum number of instances to scale up to
