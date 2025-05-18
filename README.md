@@ -1,60 +1,87 @@
-# SoPra RESTful Service Template FS25
+# Codenames-Server
 
-## Getting started with Spring Boot
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: https://spring.io/guides/tutorials/rest/
+## Introduction
+Codenames is a game where opposing teams (red/blue) compete to describe their team’s words. There is a 5x5 grid of tiles with a word on each.  Each team has one spymaster who gives a clue to help their teammates guess the right words. They can only use one word as a descriptor, and the number of tiles it refers to. For example, “Water, 3” might describe “pool”, “fish”, “bucket”. The aim of the game is to be the first team to guess all of your tiles.
 
-## Setup this Template with your IDE of choice
-Download your IDE of choice (e.g., [IntelliJ](https://www.jetbrains.com/idea/download/), [Visual Studio Code](https://code.visualstudio.com/), or [Eclipse](http://www.eclipse.org/downloads/)). Make sure Java 17 is installed on your system (for Windows, please make sure your `JAVA_HOME` environment variable is set to the correct version of Java).
+The aim of this  project is to digitalize the analog game and make it available to be played on the web. The possibilities of a online version are infinite, but it creates as well some inconveniences. As players would not be playing on the same room, it is required an input text to provide the clue and the times that the Spymaster thinks that a word is repeated. Moreover, it is possible that the players in the same room do not speak the same language. Therefore, we have designed a translation system.
 
-### IntelliJ
-If you consider to use IntelliJ as your IDE of choice, you can make use of your free educational license [here](https://www.jetbrains.com/community/education/#students).
-1. File -> Open... -> SoPra server template
-2. Accept to import the project as a `gradle project`
-3. To build right click the `build.gradle` file and choose `Run Build`
+Additionally, one complain that regular players complain about is that at a certain point the words start to become familiar. To enhance the players experience, we have added as well another version which instead of words, images are generated each time and displayed.
 
-### VS Code
-The following extensions can help you get started more easily:
--   `vmware.vscode-spring-boot`
--   `vscjava.vscode-spring-initializr`
--   `vscjava.vscode-spring-boot-dashboard`
--   `vscjava.vscode-java-pack`
+## Used Technologies
 
-**Note:** You'll need to build the project first with Gradle, just click on the `build` command in the _Gradle Tasks_ extension. Then check the _Spring Boot Dashboard_ extension if it already shows `soprafs24` and hit the play button to start the server. If it doesn't show up, restart VS Code and check again.
+ - Java 17
+ - Springboot
+ - Gradle (Buildsystem)
+ - MongoDB (Database)
+ - Google Cloud (Deployment)
+ - SonarCloud (Source Control)
+ - OpenAI (Image Generation)
+ - DeepL (Translation)
+ 
+## High-Level Components
 
-## Building with Gradle
+ [Game Class](https://github.com/cyrimu/sopra-fs25-group-16-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs24/classes/Game.java):
+	 The game class contains all the data needed to represent Codenames in a digitial format and contains helper functions to retrieve often requested partial data and querys in a structured manner.
+	 
+[Game Service](https://github.com/cyrimu/sopra-fs25-group-16-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs24/service/GameService.java):
+ The Game Service implements the actual logic to play Codenames. All actions from players are forwarded via endpoints to this service and the service modifies the game state of the correct game object corresponding to the action input by players. Additionally it functions as a Factory for Game objects.
+ 
+ [Lobby Class](https://github.com/cyrimu/sopra-fs25-group-16-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs24/classes/Lobby.java):
+ The Lobby class functions as a waiting area for players and stores the wished game configuration by players (Image mode vs. Text mode, assigned roles, etc.). This class only stores the data and offers simple modification. This data stored in the Lobby is passed via the GameConfiguration Class to the Game object constructor when creating new games.
+ 
+ [Lobby Service](https://github.com/cyrimu/sopra-fs25-group-16-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs24/service/LobbyService.java):
+ The Lobby service processes all the updates that are received from players regarding the Lobby stat and modifies the corresponding Lobby object. These modifications are then passed back to all players via Websocket. Additionally it functions as a Factory for Lobby objects.
+
+## Building
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Prerequisites
+
+ 1. Download and install JDK-17 : 
+	[Link to instructions](https://www.oracle.com/java/technologies/downloads/)
+   
+2. For version Control and contribution Git needs to be installed:
+	[Link to instructions](https://git-scm.com/downloads)
+   
+ 3. You also need to setup a GitHub account:
+	 [Link to instructions](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github)
+
+### External Dependencies
+
+ - The DeepL API is used for translation and needs to be working in order for translation to succeed.
+ - The OpenAI Image Generation API needs to be running in order for Image mode to function correctly.
+ - MongoDB is used as a database and needs to be running in order for this application to work.
+ (No action by developer is necessary since connection is already implemented)
+
+### Building with Gradle
+
 You can use the local Gradle Wrapper to build the application.
+
 -   macOS: `./gradlew`
 -   Linux: `./gradlew`
 -   Windows: `./gradlew.bat`
 
 More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
 
-### Build
+#### Build
 
-```bash
-./gradlew build
-```
+    ./gradlew build
 
-### Run
+#### Run
 
-```bash
-./gradlew bootRun
-```
+    ./gradlew bootRun
+
 
 You can verify that the server is running by visiting `localhost:8080` in your browser.
 
-### Test
+#### Test
 
-```bash
-./gradlew test
-```
+    ./gradlew test
 
-### Development Mode
-You can start the backend in development mode, this will automatically trigger a new build and reload the application
-once the content of a file has been changed.
+#### Development Mode
+
+You can start the backend in development mode, this will automatically trigger a new build and reload the application once the content of a file has been changed.
 
 Start two terminal windows and run:
 
@@ -68,51 +95,55 @@ If you want to avoid running all tests with every change, use the following comm
 
 `./gradlew build --continuous -xtest`
 
-## API Endpoint Testing with Postman
+#### API Endpoint Testing with Postman
+
 We recommend using [Postman](https://www.getpostman.com) to test your API Endpoints.
 
-## Debugging
+#### Debugging
+
 If something is not working and/or you don't know what is going on. We recommend using a debugger and step-through the process step-by-step.
 
 To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command), do the following:
 
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug "Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
+1.  Open Tab: **Run**/Edit Configurations
+2.  Add a new Remote Configuration and name it properly
+3.  Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
+4.  Press `Shift + F9` or the use **Run**/Debug "Name of your task"
+5.  Set breakpoints in the application where you need it
+6.  Step through the process one step at a time
 
-## Testing
-Have a look here: https://www.baeldung.com/spring-boot-testing
 
-<br>
-<br>
-<br>
+## Deployment
+### External Dependencies
+ - This server will deploy to Google Cloud to run, therefore the Google Services need to be running.
+ - The GitHub actions need the connected Secrets to be present in order for deployment to succeed.
+ - For Source code control Sonarcloud needs to be running and working
+### Steps to deploy
+This project uses CI/CD using github actions and will automatically deploy to the Google Cloud and all other external dependencies on each commit. Therefore no additional actions need to be performed.
+### Modify Deployment
+ - To add additional processes modify the [github actions file](https://github.com/cyrimu/sopra-fs25-group-16-server/tree/main/.github/workflows)
+ - To modify Google Cloud settings modify [app.yaml](https://github.com/cyrimu/sopra-fs25-group-16-server/blob/main/app.yaml) 
 
-## Docker
+## Roadmap
+Additional Features that could be implemented:
 
-### Introduction
-This year, for the first time, Docker will be used to ease the process of deployment.\
-Docker is a tool that uses containers as isolated environments, ensuring that the application runs consistently and uniformly across different devices.\
-Everything in this repository is already set up to minimize your effort for deployment.\
-All changes to the main branch will automatically be pushed to dockerhub and optimized for production.
+ - Add a live chat for players to interact with each other (potentially split Spymasters and Operatives so that Spymasters cannot abuse chat to give hints).
+ - Implement real time highlighting of selected cards for all players, so that other players can perceive the thought process of the current player.
 
-### Setup
-1. **One** member of the team should create an account on [dockerhub](https://hub.docker.com/), _incorporating the group number into the account name_, for example, `SoPra_group_XX`.\
-2. This account then creates a repository on dockerhub with the _same name as the group's Github repository name_.\
-3. Finally, the person's account details need to be added as [secrets](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository) to the group's repository:
-    - dockerhub_username (the username of the dockerhub account from step 1, for example, `SoPra_group_XX`)
-    - dockerhub_password (a generated PAT([personal access token](https://docs.docker.com/docker-hub/access-tokens/)) of the account with read and write access)
-    - dockerhub_repo_name (the name of the dockerhub repository from step 2)
+## Authors
 
-### Pull and run
-Once the image is created and has been successfully pushed to dockerhub, the image can be run on any machine.\
-Ensure that [Docker](https://www.docker.com/) is installed on the machine you wish to run the container.\
-First, pull (download) the image with the following command, replacing your username and repository name accordingly.
+-  **Rashmi Dingdur** - _Frontend_ - [Profile](https://github.com/rashmidindgur)
+-  **Calvin Klein** - Frontend - [Profile](https://github.com/calvinkoch00)
+-    **Sergi Garcia Montmany** - _Fullstack_ - [Profile](https://github.com/sgm17)
+-   **Cyril Müller** - _Backend_ - [Profile](https://github.com/cyrimu)
+-   **Piotr Wojtaszewski** - _Backend_ - [Profile](https://github.com/winnerpio)
 
-```docker pull <dockerhub_username>/<dockerhub_repo_name>```
 
-Then, run the image in a container with the following command, again replacing _<dockerhub_username>_ and _<dockerhub_repo_name>_ accordingly.
+## License
 
-```docker run -p 3000:3000 <dockerhub_username>/<dockerhub_repo_name>```
+This project is licensed under the Apache-2.0 Licence - see the [LICENSE.md](https://github.com/cyrimu/sopra-fs25-group-16-server/blob/main/LICENSE) file for details
+
+## Acknowledgments
+The following template provided by the instructors of the course : "Software Praktikum (SoPra) - FS25"
+was used as starting point for this project.
+[Link to template](https://github.com/HASEL-UZH/sopra-fs25-template-server) 
