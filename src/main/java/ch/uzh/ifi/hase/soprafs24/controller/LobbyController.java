@@ -22,8 +22,8 @@ public class LobbyController {
     }
 
     @MessageMapping("/lobby/{lobbyId}/returnLobby")
-    public void handleUpdateReadyUser(@DestinationVariable String lobbyId, String username) {
-        System.out.println("User " + username + " want to return to lobby: " + lobbyId);
+    public void handleUpdateReadyUser(@DestinationVariable String lobbyId) {
+        System.out.println("The host wants to return to lobby: " + lobbyId);
 
         // Send updated ready list to all clients in the lobby
         Map<String, Object> message = new HashMap<>();
