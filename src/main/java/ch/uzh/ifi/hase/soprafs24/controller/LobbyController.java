@@ -21,14 +21,13 @@ public class LobbyController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    @MessageMapping("/lobby/{lobbyId}/ready")
+    @MessageMapping("/lobby/{lobbyId}/returnLobby")
     public void handleUpdateReadyUser(@DestinationVariable String lobbyId, String username) {
-        System.out.println("User " + username + " is ready to play: " + lobbyId);
+        System.out.println("User " + username + " want to return to lobby: " + lobbyId);
 
         // Send updated ready list to all clients in the lobby
         Map<String, Object> message = new HashMap<>();
-        message.put("type", "ready");
-        message.put("readyPlayers", username);
+        message.put("type", "returnLobby");
 
         messagingTemplate.convertAndSend("/topic/lobby/" + lobbyId, message);
     }
