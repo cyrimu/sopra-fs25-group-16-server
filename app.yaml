@@ -6,7 +6,7 @@ instance_class: F1
 env: flex
 
 automatic_scaling:
-  max_num_instances: 5
+  max_num_instances: 1
 
 runtime_config:
   operating_system: "ubuntu22"
