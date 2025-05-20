@@ -33,10 +33,13 @@ import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.images.ImageGenerateParams;
 import com.openai.models.images.ImageModel;
 
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Base64;
+import javax.imageio.ImageIO;
+
 import ch.uzh.ifi.hase.soprafs24.classes.Card;
 import ch.uzh.ifi.hase.soprafs24.classes.MongoDB;
-
-import java.io.IOException;
 
 @Service
 @Transactional
@@ -57,6 +60,26 @@ public class ImageService {
 
     public ImageService() {
 
+    }
+
+    private String compressBase64(String base64) throws IOException {
+        System.out.println("Compressing base64 imageee...");
+
+        // getting image bytes
+        byte[] decodedBytes = Base64.getDecoder().decode(base64);
+        InputStream inputStream = new ByteArrayInputStream(decodedBytes);
+        BufferedImage image = ImageIO.read(inputStream);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        javax.imageio.ImageWriteParam jpegParams = ImageIO.getImageWritersByFormatName("jpg").next().getDefaultWriteParam();
+        jpegParams.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+        // compression quality 
+        jpegParams.setCompressionQuality(0.3f);
+
+        ImageIO.write(image, "jpg", outputStream);
+        byte[] compressedBytes = outputStream.toByteArray();
+
+        return Base64.getEncoder().encodeToString(compressedBytes);
     }
 
     public String generateBase64() {
@@ -89,9 +112,16 @@ public class ImageService {
                 .orElseThrow();
 
         String imageId = UUID.randomUUID().toString();
-        saveImage(imageId, base64);
-    
-        return base64;
+        
+        String compressedBase64;
+        try {
+            compressedBase64 = compressBase64(base64);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to compress base64 image", e);
+        }
+        saveImage(imageId, compressedBase64);
+
+        return compressedBase64;
     }
 
 
@@ -99,41 +129,48 @@ public class ImageService {
         OpenAIClient client = OpenAIOkHttpClient.fromEnv();
         Map<String, String> imageMap = new HashMap<>();
         System.out.println("Generating " + n + " images");
-        
+
         if (n < 1 || n > 25) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "n must be between 1 and 25");
         }
 
-        String a = pick();
-        String b = pickDistinct(a);
-    
-        String prompt = """
-            Use colors such as black and white and grey. No other intense colors.
-            The picture should have an illustration of %s and %s with bold black outlines and minimal shading.
-            Find a creative way to combine the two subjects so that they are not just side by side.
-            """.formatted(a, b);
-    
-        ImageGenerateParams imageGenerateParams = ImageGenerateParams.builder()
-                .prompt(prompt)
-                .model(MODEL)
-                .quality(ImageGenerateParams.Quality.LOW)
-                .n(n)
-                .build();
-    
-        List<String> base64List = client.images().generate(imageGenerateParams).data()
-                .orElseThrow()
-                .stream()
-                .map(image -> image.b64Json().orElseThrow())
-                .toList();
-    
-        for (String base64 : base64List) {
-            String imageId = UUID.randomUUID().toString();
-            saveImage(imageId, base64);
-            imageMap.put(imageId, base64);
+        for (int i = 0; i < n; i++) {
+            String a = pick();
+            String b = pickDistinct(a);
+
+            String prompt = """
+                Use colors such as black and white and grey. No other intense colors.
+                The picture should have an illustration of %s and %s with bold black outlines and minimal shading.
+                Find a creative way to combine the two subjects so that they are not just side by side.
+                """.formatted(a, b);
+
+            ImageGenerateParams params = ImageGenerateParams.builder()
+                    .prompt(prompt)
+                    .model(MODEL)
+                    .quality(ImageGenerateParams.Quality.LOW)
+                    .n(1)
+                    .build();
+
+            try {
+                String base64 = client.images().generate(params).data()
+                        .orElseThrow()
+                        .stream()
+                        .findFirst()
+                        .flatMap(image -> image.b64Json())
+                        .orElseThrow();
+
+                String compressed = compressBase64(base64);
+                String imageId = UUID.randomUUID().toString();
+                saveImage(imageId, compressed);
+                imageMap.put(imageId, compressed);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to generate/compress image " + (i + 1), e);
+            }
         }
-    
+
         return imageMap;
     }
+
     
     public Map<String, String> retrieveImage() {
         Document randomDoc = imagesCollection.aggregate(List.of(new Document("$sample", new Document("size", 1)))).first();
@@ -191,21 +228,44 @@ public class ImageService {
         "pen","pencil","eraser","ruler","scissors","backpack","umbrella","hat","shoe",
         "sock","belt","watch","glasses","sunglasses","bag","pillow","blanket",
         "toothbrush","toothpaste","soap","shampoo","towel","mirror","comb","hairbrush",
-        "bicycle","helmet","ball","glove","skateboard","television","remote","speaker",
+        "bicycle","helmet","ball","glove","skateboard","television","speaker",
         "headphones","charger","cable","battery","clock","calendar","plant","flower",
         "candle","lighter","match","camera","photo","painting","keychain","ring",
         "bracelet","necklace","coin","paper","envelope","stamp","letter","magazine",
         "newspaper","tissue","napkin","sponge","bucket","broom","mop","vacuum",
         "detergent","trashcan","recycling bin","ladder","hammer","nail","screw",
-        "screwdriver","wrench","drill","saw","tape","glue","string","rope","chain",
+        "screwdriver","wrench","drill","saw","glue","string","rope","chain",
         "basket","sheet","mattress","door","window","curtain","blind","lock","handle",
         "switch","outlet","bulb","fan","heater","thermostat","alarm","whistle","dice",
-        "playing card","puzzle","sticker","marker"
+        "playing card","puzzle","sticker","marker","notepad","highlighter","whiteboard",
+        "chalk","blackboard","desk","monitor","keyboard",
+        "mousepad","printer","scanner","paperclip","binder","file","folder","stapler",
+        "staple","rubber band","clipboard","USB stick","hard drive","router","modem",
+        "antenna","screen","tripod","lens","mic","laundry basket","hanger",
+        "clothesline","iron","ironing board","dryer","washing machine",
+        "dish","pan","pot","oven","microwave","fridge","freezer","stove","blender","mixer",
+        "whisk","spatula","ladle","tongs","cup","spoon","cutting board",
+        "grater","strainer","colander","peeler","can opener","bottle opener","corkscrew",
+        "ice tray","thermos","lunchbox","food container","jar","lid","coaster","placemat",
+        "toaster","kettle","coffee maker","espresso machine","tea bag","teapot","salt shaker",
+        "pepper grinder","egg timer","pizza cutter","rolling pin",
+        "pastry brush","baking tray","muffin tin","cake stand","cookie jar",
+        "kitchen scale","fire extinguisher","first aid kit","bandage",
+        "thermometer","medicine bottle","pillbox","hand sanitizer","face mask","tweezers",
+        "nail clipper","razor","shaving cream","lip balm","makeup brush","eyeliner","mirror compact",
+        "perfume","nail polish","hair tie","hair clip","toilet paper","plunger","bath mat",
+        "toilet brush","air freshener","scale","bathrobe",
+        "slippers","fabric softener","flashlight","lantern",
+        "power strip","extension cord","fuse","toolbox","measuring tape",
+        "level","work gloves","paintbrush","roller","paint tray","drop cloth","light switch",
+        "doorbell","doormat","mailbox","fence","gate","hose","sprinkler","watering can",
+        "shovel","rake","hoe","trowel","wheelbarrow","compost bin","bird feeder","bird bath",
+        "lawn mower","hedge trimmer","leaf blower","ice scraper","windshield wiper",
+        "car key","steering wheel","seatbelt","gas can","toolbelt","helmet light",
+        "schedule","nametag","badge","ID card","lanyard","whiteboard eraser",
+        "projector","laser pointer","remote control","headrest",
+        "passport","boarding pass","suitcase","duffel bag"
     );
-
-
-
-    
 
     private static String pick() {
         return POOL.get(ThreadLocalRandom.current().nextInt(POOL.size()));

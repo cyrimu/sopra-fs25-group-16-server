@@ -144,6 +144,8 @@ Additional Features that could be implemented:
 This project is licensed under the Apache-2.0 Licence - see the [LICENSE.md](https://github.com/cyrimu/sopra-fs25-group-16-server/blob/main/LICENSE) file for details
 
 ## Acknowledgments
+**Special thanks to our Tutor Silvan for his support and guidance throughout the project.**
+
 The following template provided by the instructors of the course : "Software Praktikum (SoPra) - FS25"
 was used as starting point for this project.
 [Link to template](https://github.com/HASEL-UZH/sopra-fs25-template-server) 
