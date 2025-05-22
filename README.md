@@ -133,7 +133,7 @@ Additional Features that could be implemented:
 ## Authors
 
 -  **Rashmi Dingdur** - _Frontend_ - [Profile](https://github.com/rashmidindgur)
--  **Calvin Klein** - Frontend - [Profile](https://github.com/calvinkoch00)
+-  **Calvin Koch** - Frontend - [Profile](https://github.com/calvinkoch00)
 -    **Sergi Garcia Montmany** - _Fullstack_ - [Profile](https://github.com/sgm17)
 -   **Cyril Müller** - _Backend_ - [Profile](https://github.com/cyrimu)
 -   **Piotr Wojtaszewski** - _Backend_ - [Profile](https://github.com/winnerpio)
